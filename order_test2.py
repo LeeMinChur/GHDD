@@ -29,17 +29,6 @@ def bt2Interrupt(channel):
    global menu
    choice_menu.append(menu[1])
 
-def okInterrupt(channel):
-    global choice_menu
-def canInterrupt(channel):    
-    global choice_menu
-    image=Image.new('1',(width,height))
-    draw = ImageDraw.Draw(image)
-    disp.clear()
-    draw.text((x,top), 'order canceled',font=font,fill=255)
-    disp.image(image)
-    disp.display()
-    choice_menu=[]
 
 disp.begin()
 
@@ -62,11 +51,7 @@ font =ImageFont.load_default()
 
 GPIO.add_event_detect(15, GPIO.RISING, callback=bt1Interrupt,bouncetime=200)
 GPIO.add_event_detect(16, GPIO.RISING, callback=bt2Interrupt,bouncetime=200)
-#GPIO.add_event_detect(20, GPIO.RISING, callback=okInterrupt,bouncetime=500)
-#GPIO.add_event_detect(21, GPIO.RISING, callback=canInterrupt,bouncetime=500)
 while True:
-    print(width)
-    print(height)
     image=Image.new('1',(width,height))
     draw = ImageDraw.Draw(image)
     disp.clear()
