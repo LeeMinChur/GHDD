@@ -11,10 +11,7 @@ disp = Adafruit_SSD1306.SSD1306_128_64(rst=None, i2c_address=0x3C)
 
 disp.begin()
 
-HOST = ''
-PORT = 8888
-s= socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-disp=Adafruit_SSD1306.SSD1306_128_64(rst=None, i2c_address=0x3C)
+
 
 #화면 클리어
 disp.clear()
