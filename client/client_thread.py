@@ -1,46 +1,42 @@
 #-*- coding: utf-8 -*-
-from socket import *
+import socket
+import argparse
 import threading
 import sys
 import RPi.GPIO as GPIO
 import time
 import Adafruit_SSD1306
 from PIL import Image, ImageDraw, ImageFont
-
-#disp=Adafruit_SSD1306.SSD1306_128_64(rst=None, i2c_address=0x3C)
-
-#disp.begin()
-#disp.clear()
-#disp.display()
-
-#width=disp.width
-#height=disp.height
-#image=Image.new('1',(width, height))
-#draw=ImageDraw.Draw(image)
-#draw.rectangle((0,0,width,height),outline=0, fill=0)
-#padding=-2
-#top=padding
-#bottom=height-padding
-#x=0
-#font=ImageFont.load_default()
+import pygame
 btnOrder=14
 btnCancel=15
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(btnOrder, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(btnCancel, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-
+ordermp3="order.mp3"
+ordercancelmp3="ordercancel.mp3"
+orderacceptmp3="orderaccept.mp3"
+freq=24000
+bitsize=-16
+channels=1
+sbuffer=2048
 def send(sock):
     try:
         while True:
+            time.sleep(0.1)
             if GPIO.input(btnOrder)==GPIO.HIGH:
-                    sock.send('주문완료'.encode('utf-8'))
+                    sock.sendall('주문완료'.encode('utf-8'))
+                    pygame.mixer.init(freq,bitsize,channels,sbuffer)
+                    pygame.mixer.music.load(ordermp3)
+                    pygame.mixer.music.set_volume(0.1)
+                    pygame.mixer.music.play()
                     print('send:주문완료')
-                    break
+                    time.sleep(0.5)
             elif GPIO.input(btnCancel)==GPIO.HIGH:
-                    sock.send('주문취소'.encode('utf-8'))
+                    sock.sendadll('주문취소'.encode('utf-8'))
                     print('send:주문취소')
-                    break
+                    time.sleep(0.5)
     except:
         pass
 def receive(sock):
@@ -48,24 +44,29 @@ def receive(sock):
 
 
         while True:
+
+            time.sleep(1)
             recvData = sock.recv(1024)
-           
             if recvData.decode('utf-8') == '주문접수':
-                #draw.text((x,top),'order complete!!',font=font,fill=255)
                 print('receive:주문접수')
-                break
-            elif recvData.decode('utf-8')=='주문취소':
-                #draw.text((x,top+8),'oredr Denied!!',font=font,fill=255)
+                pygame.mixer.init(freq,bitsize,channels,sbuffer)
+                pygame.mixer.music.load(orderacceptmp3)
+                pygame.mixer.music.set_volume(0.1)
+                pygame.mixer.music.play()
+            elif recvData.decode('utf-8')=='주문거절':
                 print('recevie:주문거절')
-                break
+                pygame.mixer.init(freq,bitsize,channels,sbuffer)
+                pygame.mixer.music.load(ordercancelmp3)
+                pygame.mixer.music.set_volume(0.1)
+                pygame.mixer.music.play()
+            
     except:
         pass
 HOST='192.168.0.140'
 PORT=8888
 
-clientSock=socket(AF_INET,SOCK_STREAM)
+clientSock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 clientSock.connect((HOST,PORT))
-
 while True:
     try:
         sender=threading.Thread(target=send,args=(clientSock,))
@@ -74,11 +75,8 @@ while True:
         receiver.start()
         receiver.join()
         sender.join()
-        #image=Image.new('1',(width,height))
-        #draw=ImageDraw.Draw(image)
-        #disp.image(image)
-        #dist.display()
         time.sleep(0.5)
     except KeyboardInterrupt as e:
         print(e)
+        conn.close()
         break
