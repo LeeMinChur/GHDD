@@ -26,18 +26,18 @@ def mp3(source):
     pygame.mixer.music.load(source)
     pygame.mixer.music.set_volume(0.1)
     pygame.mixer.music.play()
-
+    
 def send(sock):
     try:
         while True:
             time.sleep(0.1)
             if GPIO.input(btnOrder)==GPIO.HIGH:
-                    sock.send('주문완료'.encode('utf-8'))
-                    mp3(ordermp3)
+                    sock.sendall('주문완료'.encode('utf-8'))
+                   # mp3(ordermp3)
                     print('send:주문완료')
                     time.sleep(0.5)
             elif GPIO.input(btnCancel)==GPIO.HIGH:
-                    sock.send('주문취소'.encode('utf-8'))
+                    sock.sendall('주문취소'.encode('utf-8'))
                     print('send:주문취소')
                     time.sleep(0.5)
     except:
@@ -51,10 +51,10 @@ def receive(sock):
             time.sleep(1)
             recvData = sock.recv(1024)
             if recvData.decode('utf-8') == '주문접수':
-                mp3(orderacceptmp3)
+               # mp3(orderacceptmp3)
                 print('receive:주문접수')
             elif recvData.decode('utf-8')=='주문거절':
-                mp3(orderdenied.mp3)
+               # mp3(orderdenied.mp3)
                 print('recevie:주문거절')
             
     except:
@@ -75,5 +75,5 @@ while True:
         time.sleep(0.5)
     except KeyboardInterrupt as e:
         print(e)
-        conn.close()
+        conn.socket.close()
         break
