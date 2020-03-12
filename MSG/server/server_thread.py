@@ -1,5 +1,7 @@
 #-*- coding: utf-8 -*-
 import socket
+import socketserver
+import ssl
 import threading
 import argparse
 import time
@@ -7,7 +9,7 @@ import Adafruit_SSD1306
 import RPi.GPIO as GPIO
 from PIL import Image, ImageDraw, ImageFont
 import pygame
-user_list={}
+user_list=[]
 notice_flag=0
 freq=24000
 bitsize=-16
@@ -16,6 +18,7 @@ sbuffer=2048
 ordercheckmp3="ordercheck.mp3"
 orderconfirmmp3="ordercomfirm.mp3"
 orderdeniedmp3="orderdenied.mp3"
+ringmp3="ring.mp3"
 HOST=''
 PORT=8888
 btnOrder=14
@@ -25,25 +28,24 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(btnOrder,GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(btnCancel,GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
 global r_flag
+def mp3(source):
+    pygame.mixer.init(freq,bitsize,channels,sbuffer)
+    pygame.mixer.music.load(source)
+    pygame.mixer.music.set_volume(0)
+    pygame.mixer.music.play()
 def send(sock):
     try:
         while True:
             if GPIO.input(btnOrder)==GPIO.HIGH :
                 sock.send('주문접수'.encode('utf-8'))
+                mp3(orderconfirmmp3)
                 print('send:주문접수')
-                pygame.mixer.init(freq,bitsize,channels,sbuffer)
-                pygame.mixer.music.load(orderconfirmmp3)
-                pygame.mixer.music.set_volume(0.1)
-                pygame.mixer.music.play()
                 time.sleep(0.5)
                 r_flag=0
             elif GPIO.input(btnCancel)==GPIO.HIGH:
                 sock.send('주문거절'.encode('utf-8'))
                 print('send:주문거절')
-                pygame.mixer.init(freq,bitsize,channels,sbuffer)
-                pygame.mixer.music.load(orderdeniedmp3)
-                pygame.mixer.music.set_volume(0.1)
-                pygame.mixer.music.play()
+                mp3(orderdeniedmp3)
                 r_flag=0
                 time.sleep(0.5)
             time.sleep(0.01)
@@ -55,11 +57,10 @@ def receive(sock):
         while True:
             recvData = sock.recv(1024)
             if recvData.decode('utf-8')=='주문완료':
+                mp3(ringmp3)
+                time.sleep(2)
+                mp3(ordercheckmp3)
                 print('receive:주문완료')
-                pygame.mixer.init(freq,bitsize,channels,sbuffer)
-                pygame.mixer.music.load(ordercheckmp3)
-                pygame.mixer.music.set_volume(0.1)
-                pygame.mixer.music.play()
             elif recvData.decode('utf-8')=='주문취소':
                 print('receive:주문취소')
                 r_flag=0
@@ -71,6 +72,7 @@ print("socket created!")
 try:
     serverSock.bind((HOST,PORT))
 except socket.error:
+    serverSock.close()
     print('bind failed')
 serverSock.listen(5)
 #print('succes!')
@@ -78,18 +80,22 @@ serverSock.listen(5)
 #print('connected')
 #print(conn)
 def wheh():
-    conn,addr=serverSock.accept()
+    conn,(addr,port)=serverSock.accept()
+    print(port)
+    user_list.appand(port)
     t=threading.Thread(target=wheh)
     sender=threading.Thread(target=send,args=(conn,))
     receiver=threading.Thread(target=receive,args=(conn,))
     t.start()
     while True:
-        print('connect:', addr[0],addr[1])
+        print('connect:', addr,port)
         sender.start()
         receiver.start()
         sender.join()
         receiver.join()
         time.sleep(0.5)
+        conn.close()
+
 while True:
     try:
         wheh()
