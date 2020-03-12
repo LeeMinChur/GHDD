@@ -10,8 +10,18 @@ from PIL import Image, ImageDraw, ImageFont
 
 HOST = ''
 PORT = 8888
-s= socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-disp=Adafruit_SSD1306.SSD1306_128_64(rst=None, i2c_address=0x3C)
+def handle_client(client_socket,addr):
+    print("주소" , addr)
+    user = client_socket.recv(1024)
+    string = "id: %s" % user.decode()
+    client_socket.sendall(string.encode())
+def eccept_func():
+    global server_socket
+
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.setsockopt
+    
+
 
 disp.begin()
 
