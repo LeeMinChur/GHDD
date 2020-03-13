@@ -8,7 +8,7 @@ import time
 import Adafruit_SSD1306
 from PIL import Image, ImageDraw, ImageFont
 import pygame
-btnOrder=14
+btnOrder=16
 btnCancel=15
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
@@ -33,11 +33,12 @@ def send(sock):
             time.sleep(0.1)
             if GPIO.input(btnOrder)==GPIO.HIGH:
                     sock.sendall('주문완료'.encode('utf-8'))
-                   # mp3(ordermp3)
+                    mp3(ordermp3)
                     print('send:주문완료')
                     time.sleep(0.5)
             elif GPIO.input(btnCancel)==GPIO.HIGH:
                     sock.sendall('주문취소'.encode('utf-8'))
+                    mp3(ordercancelmp3)
                     print('send:주문취소')
                     time.sleep(0.5)
     except:
@@ -59,7 +60,7 @@ def receive(sock):
             
     except:
         pass
-HOST='192.168.0.140'
+HOST='192.168.0.133'
 PORT=8888
 
 clientSock=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
