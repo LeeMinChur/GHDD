@@ -23,7 +23,7 @@ def mp3(source):
     pygame.mixer.music.set_volume(0.1)
     pygame.mixer.music.play()
 HOST = '192.168.0.133'
-PORT = 8888
+PORT = 8888 
 btn_1=26
 btn_2=19
 btn_3=13
@@ -95,18 +95,24 @@ GPIO.add_event_detect(btn_3, GPIO.RISING, callback=bt3Interrupt,bouncetime=200)
 GPIO.add_event_detect(btn_4, GPIO.RISING, callback=bt4Interrupt,bouncetime=200)
 GPIO.add_event_detect(btn_5, GPIO.RISING, callback=bt5Interrupt,bouncetime=200)
 s.connect((HOST,PORT))
-def order(sock):
+def send(sock):
     global choice_menu
     try:
         while True:
+            for i in choice_menu:
+                sock.send(i.encode('utf-8'))
+                time.sleep(0.1)
+            sock.send('주문접수'.encode('utf-8'))
+            break
     except:
         pass
-def ordercheck(sock):
+def receive(sock):
     try:
         while True:
             time.sleep(0.1)
-            recv=sock.recv(1024)
-            if recv.decode('utf-8')=='주문완료':
+            reciv=sock.recv(1024)
+            print(reciv.decode('utf-8'))
+            if reciv.decode('utf-8')=='주문완료':
                 image=Image.new('1',(width,height))
                 draw = ImageDraw.Draw(image)
                 disp.clear()
@@ -118,23 +124,6 @@ def ordercheck(sock):
                 break
     except:
         pass
-def setting(sock):
-    try:
-        while True:
-            time.sleep(0.1)
-            recv=sock.recv(1024)
-            if recv.decode('utf-8')=='메뉴세팅':
-                image=Image.new('1',(width,height))
-                draw = ImageDraw.Draw(image)
-                disp.clear()
-                draw.text((x+34,top+32),'메뉴가 변경됩니다 다시 주문해주세요',font=font,fill=255)
-                disp.image(image)
-                disp.display()
-                time.sleep(2)
-                break
-    except:
-        pass
-
 
 while True:
     try:
@@ -183,23 +172,19 @@ while True:
                                 disp.display()
                                 time.sleep(2)
                                 if GPIO.input(btn_ok) == GPIO.HIGH:
-                                    while True:
-                                        for i in choice_menu:
-                                            sock.send(i.encode('utf-8'))
-                                            time.sleep(0.1)
-                                        sock.send('주문접수'.encode('utf-8'))
-                                        image=Image.new('1',(width,height))
-                                        draw = ImageDraw.Draw(image)
-                                        disp.clear()
-                                        draw.text((x+40,top+32),'주문완료',font=font,fill=255)
-                                        disp.image(image)
-                                        disp.display()
-                                        mp3(ordermp3)
-                                        time.sleep(2)
-                                        choice_menu=[]
-                                        ordercheck(s)
+                                    send(s)
+                                    image=Image.new('1',(width,height))
+                                    draw = ImageDraw.Draw(image)
+                                    disp.clear()
+                                    draw.text((x+40,top+32),'주문완료',font=font,fill=255)
+                                    disp.image(image)
+                                    disp.display()
+                                    mp3(ordermp3)
+                                    time.sleep(2)
+                                    choice_menu=[]
+                                    receive(s)
                                            
-                                        break
+                                    break
                                 elif GPIO.input(btn_can) == GPIO.HIGH:
                                     image=Image.new('1',(width,height))
                                     draw = ImageDraw.Draw(image)
@@ -224,7 +209,7 @@ while True:
                         time.sleep(2)
                         choice_menu=[]
                         break                
-                time.sleep(2)
+                    time.sleep(2)
                 sender=threading.Thread(target=send,args=(s,))
                 receiver=threading.Thread(target=receive,args=(s,))
                 sender.start()
