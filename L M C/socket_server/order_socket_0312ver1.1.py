@@ -149,18 +149,7 @@ def receive(sock):
             s.close()
             conn.close()
             break
-            
-
-
-    sender=threading.Thread(target=send,args=(conn,))
-    receiver=threading.Thread(target=receive, args=(conn,))
-
-        receiver.start()
-        sender.start()        
-        sender.join()
-        receiver.join() 
-        time.sleep(0.1)
-    
+        
 while True:
     try:
         print('connected')
@@ -174,11 +163,7 @@ while True:
     
     except KeyboardInterrupt:
         break
-        
-
-
-
-
+    
 #receive(s)
 '''temp_all = []      
 while True:
