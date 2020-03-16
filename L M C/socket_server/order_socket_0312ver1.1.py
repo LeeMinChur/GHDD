@@ -24,6 +24,7 @@ productout="productout.mp3"
 
 print ('Socket created')
 
+
 try:
     s.bind((HOST,PORT))
     s.listen(2)
@@ -31,7 +32,8 @@ try:
 except socket.error:
     print('Bind failed')
     s.close()
-    
+
+
 print ('Socket awaiting messages')
 order_list=[]
         
@@ -71,11 +73,15 @@ GPIO.setup(button4, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(button5, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 def send(sock):
-    try:
-        conn.send('주문완료'.encode('utf-8'))
-        time.sleep(0.1)
-    except:
-        pass
+    while True:
+        try:
+            #conn.send('주문완료'.encode('utf-8'))
+            time.sleep(0.001)
+            if GPIO.input(button1)==GPIO.HIGH:
+                conn.send('주문완료'.encode('utf-8'))
+                break
+        except:
+            pass
     
 def receive(sock):
     while True:
@@ -85,23 +91,96 @@ def receive(sock):
         else:
             order_list.append(recv.decode('utf-8'))
             conn.send('order complete'.encode('utf-8'))
+    temp_all = []      
+    while True:
+        try:        
+            print(order_list)
+            image = Image.new('1',(width, height))
+            draw = ImageDraw.Draw(image)
+            disp.clear()
+            draw.text((x+29,top),'Order List',font=font, fill=255)
+            temp=[]
+            for i in range(len(order_list)):
+                temp.append(order_list[i])
+                draw.text((x,top+8*(i+1)), '{}'.format(order_list[i]), font=font, fill=255)
+            temp_all.append(temp)
+            draw.text((x,top+56),'1.OK 2.Cancel 3.Bye',font=font, fill=255)
+            disp.image(image)
+            disp.display()
+            time.sleep(2)
             
-def thread():
-    conn,addr = s.accept()
-    print('connected')
-    t=threading.Thread(target=thread)
+            if GPIO.input(button2)==GPIO.HIGH:
+                #conn.send('주문완료'.encode('utf-8'))
+                image = Image.new('1',(width, height))
+                draw = ImageDraw.Draw(image)
+                disp.clear()
+                draw.text((x+29,top+25), 'Cancle', font=font, fill=255)
+                mp3(orderdeniedmp3)
+                disp.image(image)
+                disp.display()
+                
+            if GPIO.input(button3)==GPIO.HIGH:
+                image = Image.new('1',(width, height))
+                draw = ImageDraw.Draw(image)
+                disp.clear()
+                draw.text((x+29,top+25), 'Bye', font=font, fill=255)
+                disp.image(image)
+                disp.display()
+                mp3(ordercheckmp3)
+                
+            if GPIO.input(button4)==GPIO.HIGH:
+                image = Image.new('1',(width, height))
+                draw = ImageDraw.Draw(image)
+                disp.clear()
+                for i in range(len(temp_all)):
+                    draw.text((x,top+8*(i+1)), '{}'.format(temp_all[i]), font=font, fill=255)
+                disp.image(image)
+                disp.display()
+                    
+            if GPIO.input(button5)==GPIO.HIGH:
+                break
+                
+            disp.image(image)
+            disp.display()
+            time.sleep(2)
+            #thread()
+        except KeyboardInterrupt as e:
+            
+            s.close()
+            conn.close()
+            break
+            
+
+
     sender=threading.Thread(target=send,args=(conn,))
     receiver=threading.Thread(target=receive, args=(conn,))
-    t.start()
-    while True:
-        sender.start()
+
         receiver.start()
+        sender.start()        
         sender.join()
         receiver.join() 
         time.sleep(0.1)
+    
+while True:
+    try:
+        print('connected')
+        sender=threading.Thread(target=send,args=(conn,))
+        receiver=threading.Thread(target=receive, args=(conn,))
+        receiver.start()
+        sender.start()        
+        sender.join()
+        receiver.join() 
+        time.sleep(0.1)
+    
+    except KeyboardInterrupt:
+        break
+        
 
-receive(s)
-temp_all = []      
+
+
+
+#receive(s)
+'''temp_all = []      
 while True:
     try:        
         print(order_list)
@@ -167,7 +246,7 @@ while True:
         print(e)
         s.close()
         conn.close()
-        break
+        break'''
 
 
 
