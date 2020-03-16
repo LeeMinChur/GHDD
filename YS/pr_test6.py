@@ -97,48 +97,9 @@ GPIO.add_event_detect(btn_5, GPIO.RISING, callback=bt5Interrupt,bouncetime=200)
 s.connect((HOST,PORT))
 def order(sock):
     global choice_menu
-    try:
-        while True:
-    except:
-        pass
-def ordercheck(sock):
-    try:
-        while True:
-            time.sleep(0.1)
-            recv=sock.recv(1024)
-            if recv.decode('utf-8')=='주문완료':
-                image=Image.new('1',(width,height))
-                draw = ImageDraw.Draw(image)
-                disp.clear()
-                draw.text((x+34,top+32),'주문접수완료',font=font,fill=255)
-                disp.image(image)
-                disp.display()
-                mp3(ordermp3)
-                time.sleep(2)
-                break
-    except:
-        pass
-def setting(sock):
-    try:
-        while True:
-            time.sleep(0.1)
-            recv=sock.recv(1024)
-            if recv.decode('utf-8')=='메뉴세팅':
-                image=Image.new('1',(width,height))
-                draw = ImageDraw.Draw(image)
-                disp.clear()
-                draw.text((x+34,top+32),'메뉴가 변경됩니다 다시 주문해주세요',font=font,fill=255)
-                disp.image(image)
-                disp.display()
-                time.sleep(2)
-                break
-    except:
-        pass
-
-
-while True:
-    try:
-        while True:
+    global menu
+    while True:
+        try:
             image=Image.new('1',(width,height))
             draw = ImageDraw.Draw(image)
             disp.clear()
@@ -181,25 +142,25 @@ while True:
                                 draw.text((x+34,top+52),'6.확인 7.취소',font=font2,fill=255)
                                 disp.image(image)
                                 disp.display()
-                                time.sleep(2)
+                                time.sleep(5)
+                                
                                 if GPIO.input(btn_ok) == GPIO.HIGH:
-                                    while True:
-                                        for i in choice_menu:
-                                            sock.send(i.encode('utf-8'))
-                                            time.sleep(0.1)
-                                        sock.send('주문접수'.encode('utf-8'))
-                                        image=Image.new('1',(width,height))
-                                        draw = ImageDraw.Draw(image)
-                                        disp.clear()
-                                        draw.text((x+40,top+32),'주문완료',font=font,fill=255)
-                                        disp.image(image)
-                                        disp.display()
-                                        mp3(ordermp3)
-                                        time.sleep(2)
-                                        choice_menu=[]
-                                        ordercheck(s)
-                                           
-                                        break
+                                    for i in choice_menu:
+                                        sock.sendall(i.encode('utf-8'))
+                                        time.sleep(0.1)
+                                    sock.send('주문접수'.encode('utf-8'))
+                                    image=Image.new('1',(width,height))
+                                    draw = ImageDraw.Draw(image)
+                                    disp.clear()
+                                    draw.text((x+40,top+32),'주문완료',font=font,fill=255)
+                                    disp.image(image)
+                                    disp.display()
+                                    mp3(ordermp3)
+                                    time.sleep(2)
+                                    choice_menu=[]
+                                    ordercheck(s)      
+                                    break
+                                
                                 elif GPIO.input(btn_can) == GPIO.HIGH:
                                     image=Image.new('1',(width,height))
                                     draw = ImageDraw.Draw(image)
@@ -211,7 +172,9 @@ while True:
                                     time.sleep(2)
                                     choice_menu=[]
                                     break
-                                
+                                else:
+                                    continue
+                            break   
                                    
                     elif GPIO.input(btn_can) == GPIO.HIGH:
                         image=Image.new('1',(width,height))
@@ -225,13 +188,57 @@ while True:
                         choice_menu=[]
                         break                
                 time.sleep(2)
-                sender=threading.Thread(target=send,args=(s,))
-                receiver=threading.Thread(target=receive,args=(s,))
-                sender.start()
-                receiver.start()
-                receiver.join()
-                sender.join()
-                time.sleep(0.5)
+        except:
+            pass
+    
+def ordercheck(sock):
+    try:
+        while True:
+            time.sleep(0.1)
+            recv=sock.recv(1024)
+            if recv.decode('utf-8')=='주문완료':
+                image=Image.new('1',(width,height))
+                draw = ImageDraw.Draw(image)
+                disp.clear()
+                draw.text((x+34,top+32),'주문접수완료',font=font,fill=255)
+                disp.image(image)
+                disp.display()
+                mp3(ordermp3)
+                time.sleep(2)
+                break
+    except:
+        pass
+def setting(sock):
+    global menu
+    try:
+        while True:
+            time.sleep(0.1)
+            recv=sock.recv(1024)
+            if recv.decode('utf-8')=='메뉴세팅':
+                image=Image.new('1',(width,height))
+                draw = ImageDraw.Draw(image)
+                disp.clear()
+                draw.text((x+34,top+32),'메뉴가 변경됩니다 다시 주문해주세요',font=font,fill=255)
+                disp.image(image)
+                disp.display()
+                time.sleep(2)
+                break
+                
+    except:
+        pass
+    
+while True:
+    try:
+        order_customer=threading.Thread(target=order,args=(s,))
+        order_complete=threading.Thread(target=ordercheck,args=(s,))
+        menu_setting=threading.Thread(target=setting,args=(s,))
+        order_customer.start()
+        order_complete.start()
+        menu_setting.start()
+        order_customer.join()
+        order_complete.join()
+        menu_setting.join()
+        time.sleep(0.5)
         
     except KeyboardInterrupt as e:
         print(e)
@@ -243,6 +250,8 @@ while True:
         GPIO.remove_event_detect(btn_5)
         GPIO.cleanup()
         break
+
+
 
 
 
