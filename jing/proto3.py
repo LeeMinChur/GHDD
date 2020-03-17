@@ -9,6 +9,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QLCDNumber, QHBoxLayout
 
+# from protonew.proto1 import *
+
 
 class Ui_MainWindow(QMainWindow):
     def setupUi(self, MainWindow):
@@ -96,26 +98,27 @@ class Ui_MainWindow(QMainWindow):
         self.counterbutton.setText(_translate("MainWindow", "카운터로 메시지보내기"))
 
 
-
     def guit1(self):
-        test2 = threading.Timer(0.3, self.guit1, args=[self.j])
+
         self.j += 10
         self.customertext.setText(str(self.j))
         self.customertext.repaint()
-        test2.start()
+
 
     def guit2(self):
-        test4 = threading.Timer(0.3, self.guit2, args=[self.l])
+
         self.l += 100
         self.countertext.setText(str(self.l))
         self.countertext.repaint()
-        test4.start()
+
 
     def pushcustomer(self):
         print("1")
 
     def pushcounter(self):
         print("1")
+
+
 
 
 app = QtWidgets.QApplication(sys.argv)
