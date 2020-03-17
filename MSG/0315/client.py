@@ -25,11 +25,13 @@ while True:
         try:
             sock.sendall(data.encode()+"\n".encdoe())
             received=sock.recv(1024)
-        finally:
-            print("senet:        {}".format(data))
-            print("received:    {}".format(received.decode())
         except KeyboardInterrupt as e:
             print(e)
             data = ":/quit"
 
-sock.close()
+        finally:
+            print("sent:        {}".format(data))
+            print("received:    {}".format(received.decode()))
+    except Exception as e:
+        
+        sock.close()
