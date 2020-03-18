@@ -12,7 +12,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(btnOrder,GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(btnCancel,GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
 
-HOST='192.168.0.13'
+HOST='192.168.0.2'
 PORT=9988
 
 def rcvMsg(sock):

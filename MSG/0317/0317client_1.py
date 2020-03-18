@@ -12,7 +12,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(btnOrder,GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(btnCancel,GPIO.IN,pull_up_down=GPIO.PUD_DOWN)
 
-HOST='192.168.0.13'
+HOST='192.168.0.2'
 PORT=9988
 
 def rcvMsg(sock):
@@ -37,11 +37,11 @@ def sendMsg(sock):
             time.sleep(0.1)
             if GPIO.input(btnOrder)==GPIO.HIGH:
                 sock.send('a'.encode('utf-8'))
-                print('send:주문완소료')
+                print('send:주문완료')
                 time.sleep(1)
             elif GPIO.input(btnCancel)==GPIO.HIGH:
                 sock.send('b'.encode('utf-8'))
-                print('send: 주문취')
+                print('send: 주문취소')
                 time.sleep(1)
     except Exception as e:
         print("send Err: %s" % e)
