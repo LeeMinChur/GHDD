@@ -9,7 +9,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer
 from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QLCDNumber, QHBoxLayout
 
-# from protonew.proto1 import *
+from protonew.proto1 import *
+
+
 
 
 class Ui_MainWindow(QMainWindow):
@@ -32,7 +34,8 @@ class Ui_MainWindow(QMainWindow):
         self.customertext = QtWidgets.QTextEdit(self.centralwidget)
         self.customertext.setGeometry(QtCore.QRect(30, 60, 471, 51))
         font = QtGui.QFont()
-        font.setPointSize(13)
+        font.setPointSize(16)
+        font.setBold(True)
         self.customertext.setFont(font)
         self.customertext.setObjectName("customertext")
 
@@ -56,6 +59,7 @@ class Ui_MainWindow(QMainWindow):
         self.customerbutton.setGeometry(QtCore.QRect(30, 130, 201, 51))
         self.customerbutton.setObjectName("customerbutton")
         self.customerbutton.clicked.connect(self.pushcustomer)
+
         self.counterbutton = QtWidgets.QPushButton(self.centralwidget)
         self.counterbutton.setGeometry(QtCore.QRect(30, 330, 201, 51))
         self.counterbutton.setObjectName("counterbutton")
@@ -94,15 +98,16 @@ class Ui_MainWindow(QMainWindow):
         # ----------------------------타이머--------------------------#
         self.countertext.setText(str(1))
         self.receivecounterlabel.setText(_translate("MainWindow", "카운터에서 받기"))
-        self.customerbutton.setText(_translate("MainWindow", "메뉴세팅과 메뉴보내기"))
-        self.counterbutton.setText(_translate("MainWindow", "카운터로 메시지보내기"))
+        self.customerbutton.setText(_translate("MainWindow", "텍스트입력"))
+        self.counterbutton.setText(_translate("MainWindow", "긴하진순"))
 
 
     def guit1(self):
 
-        self.j += 10
+
+        from protonew.proto1 import put_data
+        self.j = put_data
         self.customertext.setText(str(self.j))
-        self.customertext.repaint()
 
 
     def guit2(self):
@@ -113,10 +118,15 @@ class Ui_MainWindow(QMainWindow):
 
 
     def pushcustomer(self):
-        print("1")
+
+        o = input("입력하세요")
+        subthread(o)
+
 
     def pushcounter(self):
-        print("1")
+
+        o = str("긴하진순")
+        subthread(o)
 
 
 

@@ -8,9 +8,10 @@ from PIL import Image, ImageDraw, ImageFont
 import RPi.GPIO as GPIO
 import pygame
 
-HOST = ''
-PORT=8888
+HOST = '192.168.0.2'
+PORT=9988
 s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
 
 freq=24000
 bitsize=-16
@@ -25,13 +26,13 @@ productout="productout.mp3"
 print ('Socket created')
 
 
-try:
+'''try:
     s.bind((HOST,PORT))
     s.listen(2)
     conn,addr = s.accept()
 except socket.error:
     print('Bind failed')
-    s.close()
+    s.close()'''
 
 
 print ('Socket awaiting messages')
@@ -78,23 +79,20 @@ def send(sock):
             #conn.send('주문완료'.encode('utf-8'))
             time.sleep(0.001)
             if GPIO.input(button1)==GPIO.HIGH:
-                conn.send('주문완료'.encode('utf-8'))
+                sock.send('주문완료'.encode('utf-8'))
                 break
         except:
             pass
     
 def receive(sock):
     while True:
-        recv=conn.recv(1024)
-        if recv.decode('utf-8') =='주문접수':
-            break
-        else:
-            order_list.append(recv.decode('utf-8'))
-            conn.send('order complete'.encode('utf-8'))
-    temp_all = []      
-    while True:
-        try:        
-            print(order_list)
+        try:  
+            time.sleep(0.01)
+            recv=sock.recv(1024)
+            print(recv.decode('utf-8'))
+            temp_all = []      
+            
+            order_list=list(recv.decode('utf-8').split(','))
             image = Image.new('1',(width, height))
             draw = ImageDraw.Draw(image)
             disp.clear()
@@ -107,7 +105,8 @@ def receive(sock):
             draw.text((x,top+56),'1.OK 2.Cancel 3.Bye',font=font, fill=255)
             disp.image(image)
             disp.display()
-            time.sleep(2)
+
+            
             
             if GPIO.input(button2)==GPIO.HIGH:
                 #conn.send('주문완료'.encode('utf-8'))
@@ -115,7 +114,7 @@ def receive(sock):
                 draw = ImageDraw.Draw(image)
                 disp.clear()
                 draw.text((x+29,top+25), 'Cancle', font=font, fill=255)
-                mp3(orderdeniedmp3)
+                #mp3(orderdeniedmp3)
                 disp.image(image)
                 disp.display()
                 
@@ -126,7 +125,7 @@ def receive(sock):
                 draw.text((x+29,top+25), 'Bye', font=font, fill=255)
                 disp.image(image)
                 disp.display()
-                mp3(ordercheckmp3)
+                #mp3(ordercheckmp3)
                 
             if GPIO.input(button4)==GPIO.HIGH:
                 image = Image.new('1',(width, height))
@@ -142,28 +141,35 @@ def receive(sock):
                 
             disp.image(image)
             disp.display()
-            time.sleep(2)
+            time.sleep(0.01)
+
             #thread()
         except KeyboardInterrupt as e:
             
             s.close()
-            conn.close()
+            sock.close()
             break
-        
-while True:
+
+def run():
     try:
-        print('connected')
-        sender=threading.Thread(target=send,args=(conn,))
-        receiver=threading.Thread(target=receive, args=(conn,))
-        receiver.start()
-        sender.start()        
-        sender.join()
-        receiver.join() 
-        time.sleep(0.1)
-    
-    except KeyboardInterrupt:
-        break
-    
+        with socket.socket(socket.AF_INET,socket.SOCK_STREAM)as sock:
+            sock.connect((HOST,PORT))
+            sender=threading.Thread(target=send,args=(sock,))
+            receiver=threading.Thread(target=receive, args=(sock,))
+            receiver.start()
+            sender.start()
+            sender.join()
+            receiver.join()
+            while True:
+                time.sleep(1)
+            
+    except Exception as e:
+        print('run Err: %s' % e)
+        pass
+
+run()
+
+
 #receive(s)
 '''temp_all = []      
 while True:
@@ -182,7 +188,6 @@ while True:
         disp.image(image)
         disp.display()
         time.sleep(2)
-
         if GPIO.input(button1)==GPIO.HIGH:
             send(s)
             image = Image.new('1',(width, height))
@@ -232,8 +237,4 @@ while True:
         s.close()
         conn.close()
         break'''
-
-
-
-
 
