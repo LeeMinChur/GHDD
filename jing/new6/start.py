@@ -1,4 +1,4 @@
-from new5.ui_and_function import Ui_MainWindow
+from new6.ui_and_function2 import Ui_MainWindow
 import sys
 from PyQt5 import QtWidgets
 
