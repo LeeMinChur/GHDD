@@ -6,12 +6,7 @@ import argparse
 import Adafruit_SSD1306
 from PIL import Image, ImageDraw, ImageFont
 import RPi.GPIO as GPIO
-import pygame
 
-HOST = '192.168.0.14'
-PORT=9988
-s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
 
 freq=24000
 bitsize=-16
@@ -23,27 +18,8 @@ orderdeniedmp3="orderdenied.mp3"
 ordercancelmp3="ordercancel.mp3"
 productout="productout.mp3"
 
-print ('Socket created')
 
-
-'''try:
-    s.bind((HOST,PORT))
-    s.listen(2)
-    conn,addr = s.accept()
-except socket.error:
-    print('Bind failed')
-    s.close()'''
-
-
-print ('Socket awaiting messages')
-order_list=[]
-        
-def mp3(source):
-    pygame.mixer.init(freq,bitsize,channels,sbuffer)
-    pygame.mixer.music.load(source)
-    pygame.mixer.music.set_volume(0.1)
-    pygame.mixer.music.play()
-
+order_list=['이민철','장윤수','박대원','홍영신','장승주','전진영','문선규']
 disp = Adafruit_SSD1306.SSD1306_128_64(rst=None, i2c_address=0x3C)
 disp.begin()
 disp.clear()
@@ -73,108 +49,56 @@ GPIO.setup(button3, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(button4, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(button5, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
-def send(sock):
-    while True:
-        try:
-            conn.send('주문완료'.encode('utf-8'))
-            time.sleep(0.001)
-            if GPIO.input(button1)==GPIO.HIGH:
-                sock.send('주문완료'.encode('utf-8'))
-                break
-        except:
-            pass
     
-def receive(sock):
-    while True:
-        try: 
-            image=Image.new('1',(width,height))
-            draw = ImageDraw.Draw(image)
-            disp.clear()
-            draw.text((x+29,top+20),'order screen',font=font, fill=255)
-            time.sleep(3)
-            recv=sock.recv(1024)
-            print(recv.decode('utf-8'))
-            temp_all = []      
-            
-            order_list=list(recv.decode('utf-8').split(','))
-            order_list=[]
+while True:
+        image = Image.new('1',(width, height))
+        draw = ImageDraw.Draw(image)
+        disp.clear()
+        draw.text((x+29,top),'Order List',font=font, fill=255)
+        temp=[]
+        for i in range(len(order_list)):
+            temp.append(order_list[i])
+            draw.text((x,top+8*(i+1)), '{}'.format(order_list[i]), font=font, fill=255)
+        temp_all.append(temp)
+        draw.text((x,top+56),'1.OK 2.Cancel 3.Bye',font=font, fill=255)
+        disp.image(image)
+        disp.display()
+        if GPIO.input(button2)==GPIO.HIGH:
             image = Image.new('1',(width, height))
             draw = ImageDraw.Draw(image)
             disp.clear()
-            draw.text((x+29,top),'Order List',font=font, fill=255)
-            temp=[]
-            for i in range(len(order_list)):
-                temp.append(order_list[i])
-                draw.text((x,top+8*(i+1)), '{}'.format(order_list[i]), font=font, fill=255)
-            temp_all.append(tempi)
-            print(temp_all)
-            draw.text((x,top+56),'1.OK 2.Cancel 3.Bye',font=font, fill=255)
+            draw.text((x+29,top+25), 'Cancle', font=font, fill=255)
+            #mp3(orderdeniedmp3)
             disp.image(image)
             disp.display()
-
-            
-            
-            if GPIO.input(button2)==GPIO.HIGH:
-                conn.send('주문완료'.encode('utf-8'))
-                image = Image.new('1',(width, height))
-                draw = ImageDraw.Draw(image)
-                disp.clear()
-                draw.text((x+29,top+25), 'Cancle', font=font, fill=255)
-                #mp3(orderdeniedmp3)
-                disp.image(image)
-                disp.display()
                 
-            if GPIO.input(button3)==GPIO.HIGH:
-                image = Image.new('1',(width, height))
-                draw = ImageDraw.Draw(image)
-                disp.clear()
-                draw.text((x+29,top+25), 'Bye', font=font, fill=255)
-                disp.image(image)
-                disp.display()
-                #mp3(ordercheckmp3)
-                
-            if GPIO.input(button4)==GPIO.HIGH:
-                image = Image.new('1',(width, height))
-                draw = ImageDraw.Draw(image)
-                disp.clear()
-                for i in range(len(temp_all)):
-                    draw.text((x,top+8*(i+1)), '{}'.format(temp_all[i]), font=font, fill=255)
-                disp.image(image)
-                disp.display()
-                    
-            if GPIO.input(button5)==GPIO.HIGH:
-                break
-                
+        if GPIO.input(button3)==GPIO.HIGH:
+            image = Image.new('1',(width, height))
+            draw = ImageDraw.Draw(image)
+            disp.clear()
+            draw.text((x+29,top+25), 'Bye', font=font, fill=255)
             disp.image(image)
             disp.display()
-            time.sleep(0.01)
-        except KeyboardInterrupt as e:
-            
-            s.close()
-            sock.close()
+            #mp3(ordercheckmp3)
+                
+        if GPIO.input(button4)==GPIO.HIGH:
+            image = Image.new('1',(width, height))
+            draw = ImageDraw.Draw(image)
+            disp.clear()
+            for i in range(len(temp_all)):
+                draw.text((x,top+8*(i+1)), '{}'.format(temp_all[i]), font=font, fill=255)
+            disp.image(image)
+            disp.display()
+                
+        if GPIO.input(button5)==GPIO.HIGH:
             break
-
-def run():
-    try:
-        with socket.socket(socket.AF_INET,socket.SOCK_STREAM)as sock:
-            sock.connect((HOST,PORT))
-            sender=threading.Thread(target=send,args=(sock,))
-            receiver=threading.Thread(target=receive, args=(sock,))
-            receiver.start()
-            sender.start()
-            sender.join()
-            receiver.join()
-            while True:
-                time.sleep(1)
             
-    except Exception as e:
-        print('run Err: %s' % e)
-        pass
-
-run()
+        disp.image(image)
+        disp.display()
+        time.sleep(0.01)
 
 
-#receive(s)
+
 '''temp_all = []      
 while True:
     try:        
