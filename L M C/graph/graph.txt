@@ -13,16 +13,23 @@ sql="select 주문시간,메뉴가격 from 판매내역;"
 cursor.execute(sql)
 res=cursor.fetchall()
 r=[x[0] for x in res]
+r1=[x[1] for x in res]
 print(r)
 print(r[0])
+x,y=[],[]
+for line in r:
+    x.append(line.date())
+    print(x)
+for line in r1:
+    y.append(line)
 
 
 
-x = (1,2,3)
-y = [6,4,8]
+plt.plot(x,y,linestyle='-', marker='o', label="value")
 
-plt.xlim(len(r))
-plt.ylim(0,10)
+plt.xlabel('time')
+plt.legend(loc=2)
+plt.show()
 
 
 
