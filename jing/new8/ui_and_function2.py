@@ -24,7 +24,6 @@ from matplotlib.figure import Figure
 import random
 import matplotlib.pyplot as plt
 from new8.server_ms import *
-
 from new8.sql_and_query import *
 
 
@@ -138,7 +137,7 @@ class Ui_MainWindow(QMainWindow):
         self.pushButton_12 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_12.setGeometry(QtCore.QRect(370, 60, 121, 41))
         self.pushButton_12.setObjectName("pushButton_12")
-        self.pushButton_12.clicked.connect(self.chgtables2)  # 함수연동문
+        self.pushButton_12.clicked.connect(self.chgtables)  # 함수연동문
 
         # -------------------------나머지 버튼 기능연동끝-------------------------#
 
@@ -177,15 +176,9 @@ class Ui_MainWindow(QMainWindow):
         self.tableWidget_3 = QtWidgets.QTableWidget(self.centralwidget)
         self.tableWidget_3.setGeometry(QtCore.QRect(830, 110, 450, 741))
         self.tableWidget_3.setObjectName("tableWidget_3")
-        # -----------------mysql 데이터베이스 값 불러오기-----------#
 
-        ##############################################
-
-        # time.sleep(3)
         self.threading_ui()
-        # self.timer3 = QtCore.QTimer()
-        # self.timer3.timeout.connect(self.threading_ui)
-        # self.timer3.start(3000)
+
 
 
 
@@ -232,23 +225,9 @@ class Ui_MainWindow(QMainWindow):
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
         self.explain1()  # 툴팁생성
-        #----------------------------repaint--------------------#
-        # self.retranslateUi(MainWindow)
-
-        # ex14 = threading.Thread(target=self.retranslateUi(MainWindow))
-        # ex14.start()
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
-
-    # def closeEvent(self,QCloseEvent):
-    #     ans = QMessageBox.question(self,"종료확인", "종료 하시겠습니까?",
-    #                                QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
-    #     if ans == QMessageBox.Yes:
-    #         QCloseEvent.accept()
-    #     else:
-    #         QCloseEvent.ignore()
 
     #-------------------Qtimer로 시간을 리프레쉬시킬수 있도록 만든 함수-----------------#
     def Qtimewidget(self):
@@ -401,7 +380,7 @@ class Ui_MainWindow(QMainWindow):
         self.tableWidget_2.setObjectName("tableWidget_2")
         self.tableWidget_2.setColumnCount(ingrecol)
 
-        self.tableWidget_2.setColumnWidth(0, 244)  # 2번 재료테이블 2번 열의 길이조절
+        self.tableWidget_2.setColumnWidth(0, 240)  # 2번 재료테이블 2번 열의 길이조절
         self.tableWidget_2.setColumnWidth(1, 120)  # 2번 재료테이블 3번 열의 길이조절
 
         self.tableWidget_2.setRowCount(foodrow)
@@ -470,16 +449,6 @@ class Ui_MainWindow(QMainWindow):
                 self.tableWidget_3.setItem(i, j, item)
 
 
-        #---------------------------------------------------------------
-        # 1번테이블 열에 값 넣기 음식리스트
-        # 행 번호 값 반복문
-
-
-        self.tableWidget.repaint()
-        self.tableWidget_2.repaint()
-        self.tableWidget_3.repaint()
-
-
     # ---------------------------마우스커서를 갖다대면 나오는 툴팁----------------------#
     def explain1(self):
         self.pushButton.setToolTip('메뉴추가툴팁')  # 발주 추가버튼 툴팁
@@ -496,6 +465,11 @@ class Ui_MainWindow(QMainWindow):
 
     def menu_add(self):
         print("메뉴 추가 버튼 기능입니다.")
+        rowposition = self.tableWidget.rowCount()
+        self.tableWidget.insertRow(rowposition)
+        self.tableWidget.setItem(rowposition, 0, QtWidgets.QTableWidgetItem("text1"))
+        self.tableWidget.setItem(rowposition , 1, QtWidgets.QTableWidgetItem("text2"))
+        self.tableWidget.setItem(rowposition , 2, QtWidgets.QTableWidgetItem("text3"))
 
 
     # ---------------메뉴수정 버튼기능구현함수입니다-------------#
@@ -519,25 +493,14 @@ class Ui_MainWindow(QMainWindow):
     def ingre_mod(self):
         dlg_mod = ing_mod()
         dlg_mod.exec_()
-        # self.tableWidget.repaint()
-        # self.tableWidget_2.repaint()
-        # self.tableWidget_3.repaint()
-
 
     # ---------------재료삭제 창 띄우는 함수입니다.-------------#
     def ingre_del(self):
         dlg_del = ing_del()
         dlg_del.exec_()
-        # self.tableWidget.repaint()
-        # self.tableWidget_2.repaint()
-        # self.tableWidget_3.repaint()
-
 
     # ---------------월간판매량 버튼기능구현함수입니다-------------#
     def one_month_sales(self):
-        # window_month = month_sales()
-        # window_month.exec_()
-        # print("한달 매출 그래프입니다.")
         self.setWindowTitle('My First Application')  # 창의 제목
         self.resize(700,700)  # 창의 사이즈 조절
 
@@ -545,7 +508,6 @@ class Ui_MainWindow(QMainWindow):
         m.move(0,0)
 
         self.show()
-
 
     # ---------------연간판매량 버튼기능구현함수입니다-------------#
     def one_year_sales(self):
@@ -563,220 +525,38 @@ class Ui_MainWindow(QMainWindow):
         u3 = Ui_MainWindow2()
         u3.setupUi(MainWindow3)
         MainWindow3.show()
-        # MainWindow3.close(exec())
-
-        # self.app = QtWidgets.QApplication(sys.argv)
-        # MainWindow = QtWidgets.QMainWindow()
-        # self.ui = Ui_MainWindow2()
-        # self.ui.setupUi(MainWindow)
-        # MainWindow.show()
-        # sys.exit(self.app3.exec_())
-
-
     #-----------------------강사님이 말씀하신 레이블바꾸기----------------------------#
     def chglable(self):
         if self.team_label.text() == str("순진하긴"):
             self.team_label.setText(str("긴하진순"))
         elif self.team_label.text() == str("긴하진순"):
             self.team_label.setText(str("순진하긴"))
-
         self.team_label.repaint()
-
-
 
     #----------------------데이터베이스 테이블 리프레쉬------------------------------#
     def chgtables(self):
-
         pysql.sqldata(self)
+        self.tableWidget_2.clearContents()
+        self.tableWidget_2.setRowCount(20)
 
+        # columnpositon = self.tableWidget.columnCount()
+        # self.tableWidget.insertColumn(columnpositon)
+        #
+        # self.tableWidget.setItem(1,0,QtWidgets.QTableWidgetItem("1번열입니다"))
+        # self.tableWidget.setItem(1,1,QtWidgets.QTableWidgetItem("2번열입니다"))
+        # self.tableWidget.setItem(1,2,QtWidgets.QTableWidgetItem("3번열입니다"))
 
+        rowposition = self.tableWidget.rowCount()
+        self.tableWidget_2.insertRow(rowposition)
 
-
-        self.tableWidget.setColumnCount(data_int1)  # 음식리스트 테이블의 열 갯수 설정
-
-        self.tableWidget.setColumnWidth(0, 209)  # 1번테이블 셀의 길이조절
-        self.tableWidget.setColumnWidth(1, 100)  # 1번 테이블 셀의 길이조절
-        self.tableWidget.setColumnWidth(2, 135)  # 1번 테이블 셀의 길이조절
-        self.tableWidget.setColumnWidth(3, 135)  # 1번 테이블 셀의 길이조절
-        self.tableWidget.setColumnWidth(4, 135)  # 1번 테이블 셀의 길이조절
-
-        self.tableWidget.setRowCount(data_int2)  # 음식리스트의 행 설정
-
-        # 행의 갯수 gui칸 생성
-        for i in range(0, data_int2):
-            item = QtWidgets.QTableWidgetItem()
-            self.tableWidget.setVerticalHeaderItem(i, item)
-
-        # 열 갯수 gui칸 구성
-        for j in range(0, data_int1):
-            item = QtWidgets.QTableWidgetItem()
-            font = QtGui.QFont()
-            font.setPointSize(10)
-            font.setBold(True)
-            font.setWeight(75)
-            item.setFont(font)
-            self.tableWidget.setHorizontalHeaderItem(j, item)
-
-        # 안에 들어갈 데이터값 ui 구성
-        for i in range(0, data_int2):
-            for j in range(0, data_int1):
-                item = QtWidgets.QTableWidgetItem()
-                item.setTextAlignment(QtCore.Qt.AlignCenter)
-                self.tableWidget.setItem(i, j, item)
-
-        # ----------------------2번째 재료 테이블 구성-------------------------#
-        # 2번째 테이블 구성
-
-        self.tableWidget_2.setColumnCount(ingrecol)
-        self.tableWidget_2.setColumnWidth(0, 244)  # 2번 재료테이블 2번 열의 길이조절
-        self.tableWidget_2.setColumnWidth(1, 120)  # 2번 재료테이블 3번 열의 길이조절
-
-        self.tableWidget_2.setRowCount(foodrow)
-
-        # 만든 ui만큼 값을 집어넣을수 있는 2번 테이블 행 칸 생성
-        for i in range(0, foodrow):
-            item = QtWidgets.QTableWidgetItem()
-            self.tableWidget_2.setVerticalHeaderItem(i, item)
-
-        # 만든 ui만큼 값을 집어넣을수 있는 2번 테이블 열 칸 생성 1~5
-        for i in range(0, ingrecol):
-            item = QtWidgets.QTableWidgetItem()
-            item.setTextAlignment(QtCore.Qt.AlignCenter)
-            font = QtGui.QFont()
-            font.setPointSize(10)
-            font.setBold(True)
-            font.setWeight(75)
-            item.setFont(font)
-            self.tableWidget_2.setHorizontalHeaderItem(i, item)
-
-        # 테이블 안에 칸 구성
         for i in range(0, foodrow):
             for j in range(0, ingrecol):
-                item = QtWidgets.QTableWidgetItem()
-                item.setTextAlignment(QtCore.Qt.AlignCenter)
-                self.tableWidget_2.setItem(i, j, item)
-
-        # ---------------------------세번째 주문내역 UI테이블 구성-------------------------#
-        # 세번째 주문내역 테이블
-
-
-        # 행의 갯수 생성
-        self.tableWidget_3.setColumnCount(salecol)
-
-        # 열의 갯수 생성
-        self.tableWidget_3.setRowCount(salerow)
-
-        self.tableWidget_3.setColumnWidth(0, 150)  # 2번 재료테이블 2번 열의 길이조절
-        self.tableWidget_3.setColumnWidth(1, 160)  # 2번 재료테이블 3번 열의 길이조절
-        self.tableWidget_3.setColumnWidth(2, 160)  # 2번 재료테이블 3번 열의 길이조절
-        self.tableWidget_3.setColumnWidth(3, 100)  # 2번 재료테이블 3번 열의 길이조절
-
-        # 주문내역 테이블 열값 내부 폰트 및 설정값 생성
-        for i in range(0, salecol):
-            item = QtWidgets.QTableWidgetItem()
-            item.setTextAlignment(QtCore.Qt.AlignCenter)
-            font = QtGui.QFont()
-            font.setPointSize(10)
-            font.setBold(True)
-            font.setWeight(75)
-            item.setFont(font)
-            self.tableWidget_3.setHorizontalHeaderItem(i, item)
-
-        # 주문내역 행값 생성
-        for i in range(0, salerow):
-            item = QtWidgets.QTableWidgetItem()
-            self.tableWidget_3.setVerticalHeaderItem(i, item)
-
-        # 주문내역테이블 안에 칸 구성
-        for i in range(0, salerow):
-            for j in range(0, salecol):
-                item = QtWidgets.QTableWidgetItem()
-                item.setTextAlignment(QtCore.Qt.AlignCenter)
-                self.tableWidget_3.setItem(i, j, item)
-
-
-
-
-        #--------------- ---------------------------------------------------------------
-
-        for i in range(0, data_int2):
-            item = self.tableWidget.verticalHeaderItem(i)
-            item.setText(str(i + 1))
-
-        # 음식테이블 열 값
-
-        for i in range(0, len(menu_list)):
-            item = self.tableWidget.horizontalHeaderItem(i)
-            item.setText(str(menu_list[i]))
-
-        __sortingEnabled = self.tableWidget.isSortingEnabled()
-        self.tableWidget.setSortingEnabled(False)
-
-        # 음식테이블에 데이터 집어넣기
-
-        for i in range(0, len(res5)):
-            for j in range(0, data_int1):
-                item = self.tableWidget.item(i, j)
-                item.setText(str(res5[i][j]))
-                print(res5[i][j])
-
-        self.tableWidget.setSortingEnabled(__sortingEnabled)
-
-        # ------------------------2번 재료테이블 값 구성------------------------#
-        # 재료테이블에 행값 집어넣기
-
-        for i in range(0, foodrow):
-            item = self.tableWidget_2.verticalHeaderItem(i)
-            item.setText(str(i + 1))
-
-        # 재료테이블 열값 집어넣기
-        for i in range(0, len(ingredient_list)):
-            item = self.tableWidget_2.horizontalHeaderItem(i)
-            item.setText(str(ingredient_list[i]))
-
-        __sortingEnabled = self.tableWidget_2.isSortingEnabled()
-        self.tableWidget_2.setSortingEnabled(False)
-
-        # 재료테이블 셀에 데이터값 집어넣기
-        for i in range(0, len(foodtableall)):
-            for j in range(0, ingrecol):
-                item = self.tableWidget_2.item(i, j)
-                item.setText(str(foodtableall[i][j]))
-                print(foodtableall[i][j])
-
-        self.tableWidget_2.setSortingEnabled(__sortingEnabled)
-
-        # --------------------------3번테이블 주문내역 테이블 값-------------------#
-        # 3번테이블인 주문내역테이블의 행값 입력
-
-        for i in range(0, salerow):
-            item = self.tableWidget_3.verticalHeaderItem(i)
-            item.setText(str(i + 1))
-
-        # 주문내역 테이블 열값입력
-        for i in range(0, len(sale_list)):
-            item = self.tableWidget_3.horizontalHeaderItem(i)
-            item.setText(str(sale_list[i]))
-
-        for i in range(0, len(saletableall)):
-            for j in range(0, salecol):
-                item = self.tableWidget_3.item(i, j)
-                item.setText(str(saletableall[i][j]))
-                print(saletableall[i][j])
-
-        self.tableWidget_2.setSortingEnabled(__sortingEnabled)
-        # 3번테이블이 주문내역임을 나타낼수있는 레이블 네임
-        #-----------------------
-        # self.tableWidget.update()
-        # self.tableWidget_2.update()
-        # self.tableWidget_3.update()
-        self.tableWidget.repaint()
-        self.tableWidget_2.repaint()
-        self.tableWidget_3.repaint()
+                self.tableWidget_2.setItem(i,j,QtWidgets.QTableWidgetItem(foodtableall[i][j]))
 
 
     def chgtables2(self):
-        QtCore.QTimer.singleShot(3000, self.chgtables)
+        print("1")
+
 
 
 

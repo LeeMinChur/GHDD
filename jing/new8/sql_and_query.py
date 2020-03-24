@@ -32,6 +32,7 @@ class pysql(threading.Thread):
             #      , charset='utf8')
 
         except:
+            time.sleep(3000)
             print("연결에 문제가있습니다.")
             self.sqlConnect()
 
@@ -224,17 +225,12 @@ class pysql(threading.Thread):
 
 
     def test9(self):
-        # while True:
        self.sqldata()
 
+pysql().sqldata()
 
-x = threading.Thread(target=pysql().test9)
-x.start()
-time.sleep(3)
+# x = threading.Thread(target=pysql().test9)
+# x.start()
+# time.sleep(3)
 # time.sleep(5)
 # pysql().test9()
-
-# print("owqejdpqwjfopwejfopwjopwepovwjvoipwejvopjivpew")
-# print(data_int1)
-# print("wqojwqfjwpqofjopqwfoqwpokfopwqekofqpfkpqwokfoqkop")
-# pysql().test10()

@@ -15,6 +15,7 @@ from new8.server_ms import *
 
 
 
+
 class Ui_MainWindow2(object):
     def setupUi(self, MainWindow2):
         MainWindow2.setObjectName("MainWindow2")
@@ -101,10 +102,10 @@ class Ui_MainWindow2(object):
         MainWindow2.setWindowTitle(_translate("MainWindow", "MainWindow"))
 
         # -------------------------------타이머---------------------------#
-        self.i = 0
-        self.j = 0
-        self.k = 0
-        self.l = 0
+        self.i2 = 0
+        self.j2 = 0
+        self.k2 = 0
+        self.l2 = 0
 
 
         self.receivecounterlabel.setText(str("카운터 쪽"))
@@ -114,12 +115,12 @@ class Ui_MainWindow2(object):
 
         self.timer2 = QtCore.QTimer()
         self.timer2.timeout.connect(self.guit1)
-        self.timer2.start(100)
+        self.timer2.start(1000)
 
 
         self.timer4 = QtCore.QTimer()
         self.timer4.timeout.connect(self.guit2)
-        self.timer4.start(100)
+        self.timer4.start(1000)
 
         # ----------------------------타이머--------------------------#
         self.countertext.setText(str(1))
@@ -131,15 +132,22 @@ class Ui_MainWindow2(object):
 
 
     def guit1(self):
-        from protonew.proto2 import put_data
-        self.j = put_data
-        self.customertext.append(str(self.j))
+        from new8.server_ms import put_data
+        # if self.j == put_data:
+        self.j2 = put_data
+        self.customertext.append(str(self.j2))
         self.customertext.moveCursor(QTextCursor.End)
-        if self.j =="주문취소":
-            self.customertext.clear()
 
-        if self.j =="주문완료":
-            self.customertext.clear()
+        # if self.j == put_data:
+        #     self.j = put_data
+        #     self.customertext.append(str(self.j))
+        #     self.customertext.moveCursor(QTextCursor.End)
+
+        # if self.j =="주문취소":
+        #     self.customertext.clear()
+        #
+        # if self.j =="주문완료":
+        #     self.customertext.clear()
 
         # self.customertext.setText(str(self.j))
         # self.customertext.moveCursor(QTextCursor.StartOfWord)
@@ -148,9 +156,9 @@ class Ui_MainWindow2(object):
 
 
     def guit2(self):
-        self.l += 100
+        self.l2 += 10
 
-        self.countertext.append(str(self.l))
+        self.countertext.append(str(self.l2))
         self.countertext.moveCursor(QTextCursor.End)
         self.countertext.repaint()
 

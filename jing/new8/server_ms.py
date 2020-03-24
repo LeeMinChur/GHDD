@@ -40,6 +40,7 @@ class Cserver(threading.Thread):
             #     put_data = "메뉴세팅"
             else:
                 put_data = data
+                flag =1
             time.sleep(2)
 
     def c_send(self,put_data):
