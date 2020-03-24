@@ -1,0 +1,13 @@
+def mc_ys():
+    db = pymysql.connect(host='192.168.0.7', port=3306, user='root', passwd='5284', db='Project', charset='utf8')
+    cursor = db.cursor()
+    c=[]
+    sql="select 주문시간,메뉴가격 from 판매내역;"
+    cursor.execute(sql)
+    res=cursor.fetchall()
+    r=[x[0] for x in res]
+
+
+    print(r)
+
+mc_ys()
