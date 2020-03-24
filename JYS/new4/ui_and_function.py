@@ -779,14 +779,8 @@ class ing_mod(QDialog):
         pysql.sqlConnect(self)
 
         ing_mod_sql = "update ingredient set ingredient_stock=ingredient_stock+%s where ingredient_name=%s;"
-        try:
-            a = int(self.lineEdit1.text())
-            # input으로 받아온 값이 INT형이 아닐 때 나타내는 에러
-        except:
-            QMessageBox.information(self, "삽입 오류", "숫자를 입력하세요.", QMessageBox.Yes, QMessageBox.Yes)
-            return
 
-
+        a = int(self.lineEdit1.text())
         b = self.b
 
         data=(a,b)
