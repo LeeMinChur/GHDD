@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw, ImageFont
 import RPi.GPIO as GPIO
 import pygame
 
-HOST = '192.168.0.2'
+HOST = '192.168.0.14'
 PORT=9988
 s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
@@ -76,7 +76,7 @@ GPIO.setup(button5, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 def send(sock):
     while True:
         try:
-            #conn.send('주문완료'.encode('utf-8'))
+            conn.send('주문완료'.encode('utf-8'))
             time.sleep(0.001)
             if GPIO.input(button1)==GPIO.HIGH:
                 sock.send('주문완료'.encode('utf-8'))
@@ -86,13 +86,18 @@ def send(sock):
     
 def receive(sock):
     while True:
-        try:  
-            time.sleep(0.01)
+        try: 
+            image=Image.new('1',(width,height))
+            draw = ImageDraw.Draw(image)
+            disp.clear()
+            draw.text((x+29,top+20),'order screen',font=font, fill=255)
+            time.sleep(3)
             recv=sock.recv(1024)
             print(recv.decode('utf-8'))
             temp_all = []      
             
             order_list=list(recv.decode('utf-8').split(','))
+            order_list=[]
             image = Image.new('1',(width, height))
             draw = ImageDraw.Draw(image)
             disp.clear()
@@ -101,7 +106,8 @@ def receive(sock):
             for i in range(len(order_list)):
                 temp.append(order_list[i])
                 draw.text((x,top+8*(i+1)), '{}'.format(order_list[i]), font=font, fill=255)
-            temp_all.append(temp)
+            temp_all.append(tempi)
+            print(temp_all)
             draw.text((x,top+56),'1.OK 2.Cancel 3.Bye',font=font, fill=255)
             disp.image(image)
             disp.display()
@@ -109,7 +115,7 @@ def receive(sock):
             
             
             if GPIO.input(button2)==GPIO.HIGH:
-                #conn.send('주문완료'.encode('utf-8'))
+                conn.send('주문완료'.encode('utf-8'))
                 image = Image.new('1',(width, height))
                 draw = ImageDraw.Draw(image)
                 disp.clear()
@@ -142,8 +148,6 @@ def receive(sock):
             disp.image(image)
             disp.display()
             time.sleep(0.01)
-
-            #thread()
         except KeyboardInterrupt as e:
             
             s.close()
