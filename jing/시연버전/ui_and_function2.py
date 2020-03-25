@@ -49,11 +49,11 @@ class Ui_MainWindow(QMainWindow):
 
 
         self.team_label = QtWidgets.QLabel(self.centralwidget)
-        self.team_label.setGeometry(QtCore.QRect(70, 15, 261, 101))
+        self.team_label.setGeometry(QtCore.QRect(70, 30, 290, 140))
 
         font = QtGui.QFont()
         font.setFamily("Mapo꽃섬")
-        font.setPointSize(50)
+        font.setPointSize(55)
         font.setWeight(50)
         self.team_label.setFont(font)
         self.team_label.setObjectName("nick")
@@ -116,19 +116,19 @@ class Ui_MainWindow(QMainWindow):
         # ---------------------------월간, 연간, 미래예측버튼 ui와 연동부분----------------#
         self.pushButton_7 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_7.setGeometry(QtCore.QRect(370, 120, 121, 41))
-        self.pushButton_7.setGeometry(QtCore.QRect(220, 120, 121, 41))
+        # self.pushButton_7.setGeometry(QtCore.QRect(220, 120, 121, 41))
         self.pushButton_7.setObjectName("pushButton_7")
         self.pushButton_7.clicked.connect(self.one_month_sales)  # 함수연동문
 
-        self.pushButton_8 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_8.setGeometry(QtCore.QRect(370, 120, 121, 41))
-        self.pushButton_8.setObjectName("pushButton_8")
-        self.pushButton_8.clicked.connect(self.one_year_sales)  # 함수연동문
-
-        self.pushButton_9 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_9.setGeometry(QtCore.QRect(70, 120, 121, 41))
-        self.pushButton_9.setObjectName("pushButton_9")
-        self.pushButton_9.clicked.connect(self.future_predict)  # 함수연동문
+        # self.pushButton_8 = QtWidgets.QPushButton(self.centralwidget)
+        # self.pushButton_8.setGeometry(QtCore.QRect(370, 120, 121, 41))
+        # self.pushButton_8.setObjectName("pushButton_8")
+        # self.pushButton_8.clicked.connect(self.one_year_sales)  # 함수연동문
+        #
+        # self.pushButton_9 = QtWidgets.QPushButton(self.centralwidget)
+        # self.pushButton_9.setGeometry(QtCore.QRect(70, 120, 121, 41))
+        # self.pushButton_9.setObjectName("pushButton_9")
+        # self.pushButton_9.clicked.connect(self.future_predict)  # 함수연동문
 
         self.pushButton_10 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_10.setGeometry(QtCore.QRect(520, 120, 121, 41))
@@ -366,8 +366,8 @@ class Ui_MainWindow(QMainWindow):
         self.pushButton_6.setText(_translate("MainWindow", "재료삭제"))
         self.label.setText(_translate("MainWindow", "일일 매출:"))
         self.pushButton_7.setText(_translate("MainWindow", "한달 매출 그래프"))
-        self.pushButton_8.setText(_translate("MainWindow", "연간 총 매출액"))
-        self.pushButton_9.setText(_translate("MainWindow", "예측"))
+        # self.pushButton_8.setText(_translate("MainWindow", "연간 총 매출액"))
+        # self.pushButton_9.setText(_translate("MainWindow", "예측"))
         self.pushButton_10.setText(_translate("MainWindow", "서버로그"))
         self.pushButton_11.setText(str("누르면 팀명바뀜"))
         self.pushButton_12.setText(str("새로고침"))
@@ -442,8 +442,8 @@ class Ui_MainWindow(QMainWindow):
         self.pushButton_5.setToolTip('재료수정')
         self.pushButton_6.setToolTip('재료삭제')
         self.pushButton_7.setToolTip('한달매출')
-        self.pushButton_8.setToolTip('연간매출')
-        self.pushButton_9.setToolTip('예측')
+        # self.pushButton_8.setToolTip('연간매출')
+        # self.pushButton_9.setToolTip('예측')
 
 
     #-----------------메뉴추가 버튼기능함수입니다----------------#
@@ -617,9 +617,6 @@ class refreshtest(threading.Thread):
         for i in range(0, len(self.foodtableall)):
             for j in range(0, self.ingrecol):
                 self.tableWidget_2.setItem(i , j , QtWidgets.QTableWidgetItem(str(self.foodtableall[i][j])))
-        while True:
-            print(1)
-            time.sleep(1)
 
     # def threading_refre(self):
     #     self.x1 = threading.Thread(target=self.refresh_some)
