@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw, ImageFont
 import RPi.GPIO as GPIO
 import pygame
 
-HOST = '192.168.0.14'
+HOST = '192.168.0.2'
 PORT=9988
 s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
@@ -76,13 +76,15 @@ GPIO.setup(button5, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 def send(sock):
     while True:
         try:
-            conn.send('주문완료'.encode('utf-8'))
             time.sleep(0.001)
             if GPIO.input(button1)==GPIO.HIGH:
                 sock.send('주문완료'.encode('utf-8'))
                 break
+            if GPIO.input(button2)==GPIO.HIGH:
+                sock.send('제품출고'.encode('utf-8'))
+                break
         except:
-            pass
+             pass
     
 def receive(sock):
     while True:
@@ -114,7 +116,7 @@ def receive(sock):
 
             
             
-            if GPIO.input(button2)==GPIO.HIGH:
+            if GPIO.input(button3)==GPIO.HIGH:
                 conn.send('주문완료'.encode('utf-8'))
                 image = Image.new('1',(width, height))
                 draw = ImageDraw.Draw(image)

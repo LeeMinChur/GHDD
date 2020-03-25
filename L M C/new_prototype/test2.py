@@ -73,73 +73,60 @@ GPIO.setup(button2, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(button3, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(button4, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(button5, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-
+sock=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.connect((HOST,PORT))
+'''
 def send(sock):
     while True:
         try:
-            conn.send('주문완료'.encode('utf-8'))
+            time.sleep(0.001)
+            if GPIO.input(button1)==GPIO.HIGH:
+                sock.send('주문완료'.encode('utf-8'))
             time.sleep(0.001)
             if GPIO.input(button2)==GPIO.HIGH:
-                sock.send('주문완료'.encode('utf-8'))
-                break
+                sock.send('제품출고'.encode('utf-8'))
+               
         except:
             pass
-    
+    '''
 def receive(sock):
-    global order_list
     while True:
-        try:
-            c = []
-            temp=[]
-            temp_all = []
-            order_list=[]
-            ovlap=[]
-            
+        try: 
             image=Image.new('1',(width,height))
             draw = ImageDraw.Draw(image)
             disp.clear()
-            
             draw.text((x+29,top+20),'order screen',font=font, fill=255)
+            time.sleep(3)
             recv=sock.recv(1024)
-            print(recv.decode('utf-8'))            
-            s = (2*5)+1            
-            order_list=list(recv.decode('utf-8').split(','))            
-            print(order_list)            
-            ovlap =list(set(order_list))
-            print(ovlap)
+            print(recv.decode('utf-8'))
+            temp_all = []      
+            
+            order_list=list(recv.decode('utf-8').split(','))
             image = Image.new('1',(width, height))
             draw = ImageDraw.Draw(image)
             disp.clear()
-            draw.text((x+29,top),'Order List',font=font, fill=255)        
-           
+            draw.text((x+29,top),'Order List',font=font, fill=255)
+            temp=[]
             for i in range(len(order_list)):
                 temp.append(order_list[i])
-                draw.text((x,top+8*(i+1)), '{}'.format(order_list[i]), font=font, fill=255)
+                draw.text((x,top+8*(i+1)), '{}'.format(order_list[i]), font=font1, fill=255)
             temp_all.append(temp)
-            
-            for i in ovlap:
-                c.append(order_list.count(str(i)))
-            
-            for i in range(len(ovlap)):
-                draw.text((x,top+(s*(i+1))), '{}'.format(ovlap[i]), font=font1, fill=255)
-                draw.text((x+40,top+(s*(i+1))), '{}'.format(c[i]), font=font1, fill=255)
-                draw.text((x+50,top+(s*(i+1))), '{}'.format(ovlap[i+5]), font=font1, fill=255)
-                draw.text((x+90,top+(s*(i+1))), '{}'.format(c[i+5]), font=font1, fill=255)
-                
-            #temp_all.append(temp)
             print(temp_all)
-            #draw.text((x,top+56),'1.OK 2.Cancel 3.Bye',font=font, fill=255)
+            draw.text((x,top+56),'1.OK 2.Cancel 3.Bye',font=font, fill=255)
             disp.image(image)
-            disp.display()            
+            disp.display()
             
-            if GPIO.input(button1)==GPIO.HIGH:
+      
+                
+            if GPIO.input(button3)==GPIO.HIGH:
+                conn.send('주문완료'.encode('utf-8'))
                 image = Image.new('1',(width, height))
                 draw = ImageDraw.Draw(image)
                 disp.clear()
-                draw.text((x,top+56),'주문리스트',font=font1, fill=255)
-                for i in range(len(temp_all)):
-                    draw.text((x,top+8*(i+1)), '{}'.format(temp_all[i]), font=font, fill=255)
-                
+                draw.text((x+29,top+25), 'Cancle', font=font, fill=255)
+                #mp3(orderdeniedmp3)
+                disp.image(image)
+                disp.display()
                 
             if GPIO.input(button3)==GPIO.HIGH:
                 image = Image.new('1',(width, height))
@@ -170,16 +157,24 @@ def receive(sock):
             s.close()
             sock.close()
             break
-
+def sender1(channel):
+    sock.send('주문완료'.encode('utf-8'))
+def sender2(channel):
+    sock.send('제품출고'.encode('utf-8'))
+    
+GPIO.add_event_detect(button1,GPIO.RISING, callback=sender1, bouncetime=200)
+GPIO.add_event_detect(button2,GPIO.RISING, callback=sender2, bouncetime=200)
 def run():
     try:
         with socket.socket(socket.AF_INET,socket.SOCK_STREAM)as sock:
             sock.connect((HOST,PORT))
-            sender=threading.Thread(target=send,args=(sock,))
+            #sender=threading.Thread(target=send,args=(sock,))
             receiver=threading.Thread(target=receive, args=(sock,))
             receiver.start()
-            sender.start()
-            sender.join()
+            
+            #sender.daemon =True
+            #sender.start()
+            #sender.join()
             receiver.join()
             while True:
                 time.sleep(1)
@@ -187,8 +182,14 @@ def run():
     except Exception as e:
         print('run Err: %s' % e)
         pass
+while True:
+    try:
+        print('hi')
+        time.sleep(5)
+    except:
+        pass
 
-run()
+    
 
 
 #receive(s)
@@ -258,4 +259,3 @@ while True:
         s.close()
         conn.close()
         break'''
-

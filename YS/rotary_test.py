@@ -7,7 +7,6 @@ from luma.core.render import canvas
 from luma.oled.device import ssd1306, ssd1325, ssd1331, sh1106
 from time import sleep
 import socket
-import sysinfo
 from PIL import ImageFont, ImageDraw
 
 btn_up = 26
@@ -123,6 +122,8 @@ def sw_callback(channel):
 
     except:
         pass
+    
+    
 def order_page(channel):
     global flg
     global order_cnt
@@ -154,6 +155,9 @@ def rotary_callback1(channel):
                 menu2(device, draw, names,menuindex%len(names))
     finally:
         print("Ending")
+        
+        
+        
 def rotary_callback2(channel):
     global menuindex
     global flg
@@ -167,6 +171,8 @@ def rotary_callback2(channel):
                 menu2(device, draw, names,menuindex%len(names))
     finally:
         print("Ending")
+        
+        
 
 def recv(sock):
     global flg
@@ -179,8 +185,7 @@ def recv(sock):
             recv=sock.recv(1024)
             print('1')
             print(recv.decode())
-            if recv.decode('utf-8')=='주문완료':
-                
+            if recv.decode('utf-8')=='주문완료':                
                 with canvas(device) as draw:
                     draw.rectangle(device.bounding_box, outline="white", fill="black")
                     draw.text((20, 30), "주문접수완료",font=font, fill="white")
