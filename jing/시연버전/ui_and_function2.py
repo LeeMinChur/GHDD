@@ -617,9 +617,6 @@ class refreshtest(threading.Thread):
         for i in range(0, len(self.foodtableall)):
             for j in range(0, self.ingrecol):
                 self.tableWidget_2.setItem(i , j , QtWidgets.QTableWidgetItem(str(self.foodtableall[i][j])))
-        while True:
-            print(1)
-            time.sleep(1)
 
     # def threading_refre(self):
     #     self.x1 = threading.Thread(target=self.refresh_some)
