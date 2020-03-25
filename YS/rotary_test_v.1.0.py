@@ -13,6 +13,7 @@ btn_up = 26
 btn_down = 19
 btn_ok = 13
 btn_order = 21
+btn_test = 20
 flg=0
 HOST = '192.168.0.2'
 PORT = 9988
@@ -31,6 +32,7 @@ GPIO.setup(btn_up, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(btn_down, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(btn_ok, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(btn_order, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(btn_test, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 serial = i2c(port=1, address=0x3C)
 device = ssd1306(serial, rotate=0)
 
@@ -168,6 +170,8 @@ def rotary_callback2(channel):
                 menu2(device, draw, names,menuindex%len(names))
     finally:
         print("Ending")
+def test(channel):
+    sock.send('제품출고'.encode('utf-8'))
 
 def recv(sock):
     global flg
@@ -213,6 +217,7 @@ def recv(sock):
     except:
         pass
 
+    
 
 
 
@@ -220,6 +225,7 @@ GPIO.add_event_detect(btn_up, GPIO.RISING , callback=rotary_callback1, bouncetim
 GPIO.add_event_detect(btn_down,GPIO.RISING, callback=rotary_callback2, bouncetime=250)
 GPIO.add_event_detect(btn_ok, GPIO.RISING , callback=sw_callback, bouncetime=300)
 GPIO.add_event_detect(btn_order, GPIO.RISING, callback=order_page ,bouncetime=300)
+GPIO.add_event_detect(btn_test, GPIO.RISING, callback=test ,bouncetime=300)
 
 
 
