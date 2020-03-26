@@ -237,7 +237,7 @@ class Ui_MainWindow(QMainWindow):
         self.tableWidget_2.setColumnCount(self.ingrecol)
 
         self.tableWidget_2.setColumnWidth(0, 240)  # 2번 재료테이블 2번 열의 길이조절
-        self.tableWidget_2.setColumnWidth(1, 120)  # 2번 재료테이블 3번 열의 길이조절
+        self.tableWidget_2.setColumnWidth(1, 128)  # 2번 재료테이블 3번 열의 길이조절
 
         self.tableWidget_2.setRowCount(self.foodrow)
 
