@@ -40,10 +40,16 @@ class Cserver(threading.Thread):
                 flag =1
                 print('sending : %s' % put_data)
 
+            elif data == "가격확인":
+                print('receive:%s'%get_data.decode('utf-8'))
+                put_data ="세팅완료"
+                print('sending : %s' % put_data)
+                flag =1
+
             elif data == "메뉴확인":
                 time.sleep(1)
                 print('receive:%s'%get_data.decode('utf-8'))
-                put_data ="세팅완료"
+                put_data = self.send_price
                 print('sending : %s' % put_data)
                 flag =1
             elif data == "주문완료":
@@ -63,9 +69,6 @@ class Cserver(threading.Thread):
                     sql_out="update 판매내역 set 출고확인='출고완료' where 출고확인 is null"
                     cursor.execute(sql_time)
                     cursor.execute(sql_out)
-
-
-
 
                 sql_list=["update 재료재고,메뉴 set 재료재고.재료재고=메뉴.레시피1_재료재고 where 재료재고.재료=메뉴.레시피1;",
                           "update 재료재고,메뉴 set 재료재고.재료재고=메뉴.레시피2_재료재고 where 재료재고.재료=메뉴.레시피2;",
