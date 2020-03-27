@@ -1,5 +1,4 @@
 from new8.sql_and_query import *
-
 from PyQt5.QtWidgets import QDialog, QLabel, QComboBox, QLineEdit, QPushButton, QGridLayout, QMessageBox
 
 

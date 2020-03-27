@@ -1,5 +1,5 @@
+from new8.server_ms import subthread
 from new8.sql_and_query import *
-
 from PyQt5.QtWidgets import QDialog, QLabel, QComboBox, QLineEdit, QPushButton, QGridLayout, QMessageBox
 
 #메뉴 추가 함수
@@ -104,7 +104,12 @@ class mn_add(QDialog):
             self.cursor.execute(i)
 
         self.conn.commit()
+
+
+
         self.conn.close()
+        o = str("메뉴세팅")
+        subthread(o)
         QMessageBox.information(self, "입력완료", "메뉴추가가 완료되었습니다.", QMessageBox.Ok, QMessageBox.Ok)
         self.close()
 

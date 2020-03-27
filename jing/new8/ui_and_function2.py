@@ -1,20 +1,12 @@
-# -*- coding: utf-8 -*-
-# Form implementation generated from reading ui file 'D:\jjy\storejjy\file1\ui1\lastgoodui.ui'
-
-#pyqt5 라이브러리
-import sys
-import threading
-
 from PyQt5.QtCore import QDateTime
 from PyQt5.QtGui import QTextCursor
 from PyQt5.QtWidgets import *
-import pymysql
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtGui, QtWidgets, QtCore
 
 from new8.delete_menu import mn_del
 from new8.ing_add import ing_add
 from new8.ing_mod_button import ing_mod
-# from new8.insert_menu import mn_add
+
 from new8.insert_menu import mn_add
 from new8.menu_del_button import ing_del
 from new8.month_sale_button import month_graph
@@ -22,10 +14,6 @@ from new8.update_menu import mn_mod
 
 global w
 global ip,pt,name,pwd,dbname,char_type
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure
-import random
-import matplotlib.pyplot as plt
 from new8.server_ms import *
 from new8.sql_and_query import *
 
@@ -33,6 +21,10 @@ from new8.sql_and_query import *
 
 
 class Ui_MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setStyleSheet("background-image: url(new8/pepe.jpg)")
+
 
     # ----------------------------UI 구성요소----------------------------------#
     def setupUi(self, MainWindow):
@@ -49,7 +41,7 @@ class Ui_MainWindow(QMainWindow):
 
 
         self.team_label = QtWidgets.QLabel(self.centralwidget)
-        self.team_label.setGeometry(QtCore.QRect(70, 15, 261, 101))
+        self.team_label.setGeometry(QtCore.QRect(70, 20, 261, 101))
 
         font = QtGui.QFont()
         font.setFamily("Mapo꽃섬")
@@ -143,13 +135,19 @@ class Ui_MainWindow(QMainWindow):
         self.pushButton_12 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_12.setGeometry(QtCore.QRect(370, 60, 121, 41))
         self.pushButton_12.setObjectName("pushButton_12")
-        self.pushButton_12.clicked.connect(self.chgtables)  # 함수연동문
+        self.pushButton_12.clicked.connect(self.refresh_all)  # 함수연동문
 
         self.pushButton_13 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_13.setGeometry(QtCore.QRect(670, 120, 121, 41))
         self.pushButton_13.setObjectName("pushButton_13")
         self.pushButton_13.clicked.connect(self.send_customer)
         # self.pushButton_13.clicked.connect(self.chgtables2)
+
+        self.pushButton_14 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_14.setGeometry(QtCore.QRect(670, 60, 121, 41))
+        self.pushButton_14.setObjectName("pushButton_14")
+        self.pushButton_14.clicked.connect(self.send_end)
+
 
 
         # -------------------------나머지 버튼 기능연동끝-------------------------#
@@ -201,11 +199,11 @@ class Ui_MainWindow(QMainWindow):
         self.tableWidget.setColumnWidth(0, 209)  # 1번테이블 셀의 길이조절
         self.tableWidget.setColumnWidth(1, 100)  # 1번 테이블 셀의 길이조절
         self.tableWidget.setColumnWidth(2, 135)  # 1번 테이블 셀의 길이조절
-        self.tableWidget.setColumnWidth(3, 135)  # 1번 테이블 셀의 길이조절
+        self.tableWidget.setColumnWidth(3, 110)  # 1번 테이블 셀의 길이조절
         self.tableWidget.setColumnWidth(4, 135)  # 1번 테이블 셀의 길이조절
-        self.tableWidget.setColumnWidth(5, 135)  # 1번 테이블 셀의 길이조절
+        self.tableWidget.setColumnWidth(5, 110)  # 1번 테이블 셀의 길이조절
         self.tableWidget.setColumnWidth(6, 135)  # 1번 테이블 셀의 길이조절
-        self.tableWidget.setColumnWidth(7, 135)  # 1번 테이블 셀의 길이조절
+        self.tableWidget.setColumnWidth(7, 110)  # 1번 테이블 셀의 길이조절
 
         self.tableWidget.setRowCount(self.data_int2)  # 음식리스트의 행 설정
 
@@ -237,7 +235,7 @@ class Ui_MainWindow(QMainWindow):
         self.tableWidget_2.setColumnCount(self.ingrecol)
 
         self.tableWidget_2.setColumnWidth(0, 240)  # 2번 재료테이블 2번 열의 길이조절
-        self.tableWidget_2.setColumnWidth(1, 120)  # 2번 재료테이블 3번 열의 길이조절
+        self.tableWidget_2.setColumnWidth(1, 128)  # 2번 재료테이블 3번 열의 길이조절
 
         self.tableWidget_2.setRowCount(self.foodrow)
 
@@ -278,7 +276,7 @@ class Ui_MainWindow(QMainWindow):
         self.tableWidget_3.setColumnWidth(3, 100)  # 2번 재료테이블 3번 열의 길이조절
 
         #--------------------------테이블 설정-------------------------------#
-        # 주문내역 테이블 열값 내부 폰트 및 설정값 생성
+        # 주문내역 테이블 열값 내부 폰트 및 설정값 생성, 정렬
         for i in range(0, self.salecol):
             item = QtWidgets.QTableWidgetItem()
             item.setTextAlignment(QtCore.Qt.AlignCenter)
@@ -310,6 +308,7 @@ class Ui_MainWindow(QMainWindow):
         self.calendarWidget = QtWidgets.QCalendarWidget(self.centralwidget)
         self.calendarWidget.setGeometry(QtCore.QRect(480, 240, 321, 261))
         self.calendarWidget.setObjectName("calendarWidget")
+        self.calendarWidget.clicked.connect(self.click_print)
 
         # ----------------------------시계위젯 UI구성---------------------------------#
         self.timertime = QtCore.QTimer()
@@ -375,11 +374,12 @@ class Ui_MainWindow(QMainWindow):
         self.label_3.setText(_translate("MainWindow", "재료리스트"))
         self.label_4.setText(_translate("MainWindow", "주문내역리스트"))
         self.team_label.setText(str("긴하진순"))
-        self.pushButton_13.setText(str("메뉴세팅전송"))
+        self.pushButton_13.setText(str("메뉴세팅"))
+        self.pushButton_14.setText(str("주문완료"))
 
         self.todaysell.display(self.todaysellm)
 
-        # 음식테이블 열 값
+        # 음식테이블 열 값입력
 
         for i in range(0, len(self.menu_list)):
             item = self.tableWidget.horizontalHeaderItem(i)
@@ -398,10 +398,8 @@ class Ui_MainWindow(QMainWindow):
         self.tableWidget.setSortingEnabled(__sortingEnabled)
 
         # ------------------------2번 재료테이블 값 구성------------------------#
-        # 재료테이블에 행값 집어넣기
 
-
-        # 재료테이블 열 정렬
+        # 재료테이블 열 값
         for i in range(0, len(self.ingredient_list)):
             item = self.tableWidget_2.horizontalHeaderItem(i)
             item.setText(_translate("MainWindow", self.ingredient_list[i]))
@@ -420,7 +418,7 @@ class Ui_MainWindow(QMainWindow):
         # --------------------------3번테이블 주문내역 테이블 값-------------------#
         # 3번테이블인 주문내역테이블의 행값 입력
 
-        # 주문내역 테이블 열값입력
+        # 주문내역 테이블 열값
         for i in range(0, len(self.sale_list)):
             item = self.tableWidget_3.horizontalHeaderItem(i)
             item.setText(_translate("MainWindow", self.sale_list[i]))
@@ -444,33 +442,121 @@ class Ui_MainWindow(QMainWindow):
         self.pushButton_7.setToolTip('한달매출')
         self.pushButton_8.setToolTip('연간매출')
         self.pushButton_9.setToolTip('예측')
+        self.pushButton_14.setToolTip('고객쪽으로 메뉴를 세팅합니다. 메뉴목록과 메뉴가격을 보냅니다')
+        self.pushButton_14.setToolTip('카운터역할을 대신하여 주문완료를 보냅니다')
+
+
+    #캘린더 위젯 날짜클릭시 테이블 바뀜
+    def click_print(self):
+        test = self.calendarWidget.selectedDate()
+        self.test1=test.toPyDate()
+        print(self.test1)
+
+        pysql.sqlConnect(self)
+        # ---------------------------주문내역 테이블-----------------------------#
+        # 열 개수 --일단안됨
+
+        self.주문내역테이블열개수 = """SELECT count(COLUMN_NAME)
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = SCHEMA()
+        AND TABLE_NAME = '판매내역' ORDER BY ORDINAL_POSITION;"""
+        self.cursor.execute(self.주문내역테이블열개수)
+        self.res10 = self.cursor.fetchall()
+
+        for data in self.res10:
+            data_list = (list(data))
+            data_int = data_list[0]
+            self.salecol = int(data_int)
+
+
+        # 주문내역테이블 행 개수
+        self.주문내역테이블행개수 = """select count(*) from 판매내역 where date(주문시간)=%s;"""
+        self.cursor.execute(self.주문내역테이블행개수,self.test1)
+        self.res11 = self.cursor.fetchall()
+
+        for data1 in self.res11:
+            data_list = (list(data1))
+            data_int = data_list[0]
+            self.salerow = int(data_int)
+
+        # 열이 salecol, 행이 salerow
+
+        # 데이터 모두 하나씩 출력
+
+        self.데이터모두하나씩출력 = ''' select * from 판매내역 where date(주문시간)=%s;'''
+        self.cursor.execute(self.데이터모두하나씩출력,self.test1)
+
+        self.saletableall = self.cursor.fetchall()
+        # 일단 임의로 지정한 열갯수
+
+
+        self.column_print = """SELECT COLUMN_NAME
+        FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = SCHEMA()
+        AND TABLE_NAME = '판매내역' ORDER BY ORDINAL_POSITION;"""
+
+        self.cursor.execute(self.column_print)
+
+        sales = self.cursor.fetchall()
+        self.sale_list = [x[0] for x in sales]
+
+        #----------------일일매출----------------------#
+        일일매출 = """select sum(메뉴가격) from 판매내역 where date(주문시간)=%s;"""
+        self.cursor.execute(일일매출, self.test1)
+        todaysell = self.cursor.fetchone()
+
+        print(todaysell)
+
+        if todaysell == (None,):
+            self.todaysellm = 0
+        else:
+            data_list=list(todaysell)
+            data_int=data_list[0]
+            self.todaysellm=int(data_int)
+
+
+        self.tableWidget_3.clearContents()
+        self.tableWidget_3.setRowCount(self.salerow)
+
+        for i in range(0, len(self.saletableall)):
+            for j in range(0, self.salecol):
+                self.tableWidget_3.setItem(i , j , QtWidgets.QTableWidgetItem(str(self.saletableall[i][j])))
+
+
+        self.todaysell.display(self.todaysellm)
+
+
+
+
+
+
 
 
     #-----------------메뉴추가 버튼기능함수입니다----------------#
     def menu_add(self):
         dmn_add = mn_add()
         dmn_add.exec_()
-        refreshtest.refresh_some(self)
+        self.refresh_some()
 
     # ---------------메뉴수정 버튼기능구현함수입니다-------------#
     def menu_mod(self):
         dmn_mod = mn_mod()
         dmn_mod.exec_()
-        refreshtest.refresh_some(self)
+        self.refresh_some()
 
 
     # ---------------메뉴삭제 버튼기능구현함수입니다-------------#
     def menu_del(self):
         dmn_mod=mn_del()
         dmn_mod.exec_()
-        refreshtest.refresh_some(self)
+        self.refresh_some()
 
 
     # ---------------재료추가 창 띄우는 함수입니다. -------------#
     def ingre_add(self):
         dlg_add = ing_add()
         dlg_add.exec_()
-        refreshtest.refresh_some(self)
+        self.refresh_some()
 
         # self.x1 = threading.Thread(target=refreshtest().refresh_some)
         # # self.x1.daemon(True)
@@ -481,13 +567,13 @@ class Ui_MainWindow(QMainWindow):
     def ingre_mod(self):
         dlg_mod = ing_mod()
         dlg_mod.exec_()
-        refreshtest.refresh_some(self)
+        self.refresh_some()
 
     # ---------------재료삭제 창 띄우는 함수입니다.-------------#
     def ingre_del(self):
         dlg_del = ing_del()
         dlg_del.exec_()
-        refreshtest.refresh_some(self)
+        self.refresh_some()
 
 
     # ---------------월간판매량 버튼기능구현함수입니다-------------#
@@ -506,6 +592,7 @@ class Ui_MainWindow(QMainWindow):
     # ---------------연간판매량 버튼기능구현함수입니다-------------#
     def one_year_sales(self):
         print("연간 매출액입니다.")
+        self.refresh_some()
 
 
     # ---------------미래예측 버튼기능구현함수입니다-------------#
@@ -528,9 +615,31 @@ class Ui_MainWindow(QMainWindow):
             self.team_label.setText(str("순진하긴"))
         self.team_label.repaint()
 
+    def send_end(self):
+        print("주문완료를 보냅니다.")
+        o = str("주문완료")
+        subthread(o)
+
+
     #----------------------데이터베이스 테이블 리프레쉬------------------------------#
 
-    def chgtables(self):
+    def send_customer(self):
+        print("메뉴세팅을 보냅니다.")
+        o = str("메뉴세팅")
+        subthread(o)
+
+    def thread_refresh_all(self):
+        a = threading.Thread(target=self.refresh_all())
+        a.start()
+
+
+
+    def thread_refresh_some(self):
+        a = threading.Thread(target=self.refresh_some())
+        # a.start()
+
+
+    def refresh_all(self):
         pysql.sqldata(self)
 
         self.tableWidget.clearContents()
@@ -538,8 +647,10 @@ class Ui_MainWindow(QMainWindow):
 
         for i in range(0, len(self.res5)):
             for j in range(0, self.data_int1):
+                # item = QtWidgets.QTableWidgetItem()
+                # item.setTextAlignment(QtCore.Qt.AlignCenter)
+                # self.tableWidget.setItem(i, j, item)
                 self.tableWidget.setItem(i , j , QtWidgets.QTableWidgetItem(str(self.res5[i][j])))
-
 
 
         self.tableWidget_2.clearContents()
@@ -561,54 +672,19 @@ class Ui_MainWindow(QMainWindow):
         self.todaysell.display(self.todaysellm)
 
 
-    def chgtables2(self):
-        pysql.refresh_button(self)
-
-
-        self.tableWidget.clearContents()
-        self.tableWidget.setRowCount(self.data_int2)
-
-        for i in range(0, len(self.res5)):
-            for j in range(0, self.data_int1):
-                self.tableWidget.setItem(i , j , QtWidgets.QTableWidgetItem(str(self.res5[i][j])))
-
-
-
-        self.tableWidget_2.clearContents()
-        self.tableWidget_2.setRowCount(self.foodrow)
-
-        for i in range(0, len(self.foodtableall)):
-            for j in range(0, self.ingrecol):
-                self.tableWidget_2.setItem(i , j , QtWidgets.QTableWidgetItem(str(self.foodtableall[i][j])))
-
-
-    def send_customer(self):
-        print(1)
-        o = str("메뉴세팅")
-        subthread(o)
-
-
-
-
-
-
-class refreshtest(threading.Thread):
-    def __init__(self):
-        threading.Thread.__init__(self)
-    def refresh_all(self):
-        print(1)
 
     def refresh_some(self):
+        # a = threading.Thread(target=self.refresh_some)
         pysql.refresh_button(self)
-
 
         self.tableWidget.clearContents()
         self.tableWidget.setRowCount(self.data_int2)
-
         for i in range(0, len(self.res5)):
             for j in range(0, self.data_int1):
+                # item = QtWidgets.QTableWidgetItem()
+                # item.setTextAlignment(QtCore.Qt.AlignCenter)
+                # self.tableWidget.setItem(i, j, item)
                 self.tableWidget.setItem(i , j , QtWidgets.QTableWidgetItem(str(self.res5[i][j])))
-
 
 
         self.tableWidget_2.clearContents()
@@ -617,13 +693,9 @@ class refreshtest(threading.Thread):
         for i in range(0, len(self.foodtableall)):
             for j in range(0, self.ingrecol):
                 self.tableWidget_2.setItem(i , j , QtWidgets.QTableWidgetItem(str(self.foodtableall[i][j])))
-        while True:
-            print(1)
-            time.sleep(1)
 
-    # def threading_refre(self):
-    #     self.x1 = threading.Thread(target=self.refresh_some)
-    #     self.x1.daemon(True)
-    #     self.x1.start()
+        # a.start()
+
+
 
 

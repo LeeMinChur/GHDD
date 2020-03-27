@@ -1,6 +1,5 @@
 from new8.sql_and_query import *
-
-from PyQt5.QtWidgets import QDialog, QLabel, QComboBox, QLineEdit, QPushButton, QGridLayout, QMessageBox
+from PyQt5.QtWidgets import QDialog, QLabel, QComboBox, QPushButton, QGridLayout, QMessageBox
 
 #메뉴 삭제함수
 class mn_del(QDialog):
@@ -10,7 +9,7 @@ class mn_del(QDialog):
 
     def setupUI(self):
         pysql.sqlConnect(self)
-        self.setGeometry(300, 300, 400, 200)
+        self.setGeometry(300, 300, 400, 500)
         self.setWindowTitle("메뉴 삭제")
         self.pushButton1 = QPushButton("메뉴삭제")
         sql1 = "select 메뉴이름 from 메뉴;"
@@ -31,7 +30,7 @@ class mn_del(QDialog):
         layout = QGridLayout()
         layout.addWidget(label1, 0, 0)
         layout.addWidget(self.qcombo1, 0, 1)
-        layout.addWidget(self.pushButton1, 0, 2)
+        layout.addWidget(self.pushButton1, 0, 2 )
         layout.addWidget(self.pushButton2, 1, 2)
         self.setLayout(layout)
 

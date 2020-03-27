@@ -223,7 +223,7 @@ class Ui_MainWindow(QMainWindow):
         for i in range(0, self.data_int2):
             for j in range(0, self.data_int1):
                 item = QtWidgets.QTableWidgetItem()
-                item.setTextAlignment(QtCore.Qt.AlignCenter)
+               # item.setTextAlignment(QtCore.Qt.AlignCenter)
                 self.tableWidget.setItem(i, j, item)
 
 
@@ -237,7 +237,7 @@ class Ui_MainWindow(QMainWindow):
         self.tableWidget_2.setColumnCount(self.ingrecol)
 
         self.tableWidget_2.setColumnWidth(0, 240)  # 2번 재료테이블 2번 열의 길이조절
-        self.tableWidget_2.setColumnWidth(1, 120)  # 2번 재료테이블 3번 열의 길이조절
+        self.tableWidget_2.setColumnWidth(1, 128)  # 2번 재료테이블 3번 열의 길이조절
 
         self.tableWidget_2.setRowCount(self.foodrow)
 
@@ -257,7 +257,7 @@ class Ui_MainWindow(QMainWindow):
         for i in range(0, self.foodrow):
             for j in range(0, self.ingrecol):
                 item = QtWidgets.QTableWidgetItem()
-                item.setTextAlignment(QtCore.Qt.AlignCenter)
+              #  item.setTextAlignment(QtCore.Qt.AlignCenter)
                 self.tableWidget_2.setItem(i, j, item)
 
         # ---------------------------세번째 주문내역 UI테이블 구성-------------------------#
@@ -294,7 +294,7 @@ class Ui_MainWindow(QMainWindow):
         for i in range(0, self.salerow):
             for j in range(0, self.salecol):
                 item = QtWidgets.QTableWidgetItem()
-                item.setTextAlignment(QtCore.Qt.AlignCenter)
+              #  item.setTextAlignment(QtCore.Qt.AlignCenter)
                 self.tableWidget_3.setItem(i, j, item)
 
 

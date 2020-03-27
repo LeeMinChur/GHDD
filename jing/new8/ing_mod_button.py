@@ -1,6 +1,5 @@
     # ---------------재료수정 버튼기능구현함수입니다-------------#
 from new8.sql_and_query import *
-
 from PyQt5.QtWidgets import QDialog, QLabel, QComboBox, QLineEdit, QPushButton, QGridLayout, QMessageBox
 
 
@@ -60,6 +59,17 @@ class ing_mod(QDialog):
 
         data=(a,b)
         self.cursor.execute(self.ing_mod_sql,data)
+
+
+        self.sql_list=["update 메뉴,재료재고 set 메뉴.레시피1_재료재고=재료재고.재료재고 where 메뉴.레시피1=재료재고.재료;",
+                          "update 재료재고,메뉴 set 메뉴.레시피2_재료재고=재료재고.재료재고 where 메뉴.레시피2=재료재고.재료;",
+                          "update 재료재고,메뉴 set 메뉴.레시피3_재료재고=재료재고.재료재고 where 메뉴.레시피3=재료재고.재료;"]
+        for i in self.sql_list:
+            self.cursor.execute(i)
+
+
+
+
         self.conn.commit()
         self.conn.close()
         QMessageBox.information(self, "입력완료", "재료발주가 완료되었습니다.", QMessageBox.Ok, QMessageBox.Ok)

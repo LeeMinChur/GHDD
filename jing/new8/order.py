@@ -1,5 +1,3 @@
-import pymysql
-from new8.sql_and_query import pysql
 from new8.server_ms import *
 
 def result():

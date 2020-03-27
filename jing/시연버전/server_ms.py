@@ -36,9 +36,15 @@ class Cserver(threading.Thread):
             data = get_data.decode('utf-8')
             print("server data: %s" % data)
             if  data == "세팅수락":
-                put_data = self.send_menu2
+                put_data = self.send_menu2 + "/"
                 flag =1
                 print('sending : %s' % put_data)
+            
+            elif data == "고객시작":
+                put_data = self.send_menu2 + "/"
+                flag =1
+                print('sending : %s' % put_data)
+                
 
             elif data == "가격확인":
                 print('receive:%s'%get_data.decode('utf-8'))
@@ -49,7 +55,7 @@ class Cserver(threading.Thread):
             elif data == "메뉴확인":
                 time.sleep(1)
                 print('receive:%s'%get_data.decode('utf-8'))
-                put_data = self.send_price
+                put_data = self.send_price + "."
                 print('sending : %s' % put_data)
                 flag =1
             elif data == "주문완료":

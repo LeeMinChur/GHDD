@@ -1,15 +1,5 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'D:\jjy\storejjy\prototype\proto.ui'
-
-import time
-import sys
-import threading
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QTextCursor
-from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QLCDNumber, QHBoxLayout
-
 from new8.server_ms import *
 
 
@@ -34,7 +24,7 @@ class Ui_MainWindow2(object):
 
         # ----------------------------------------------------------------------
         self.customertext = QtWidgets.QTextEdit(self.centralwidget)
-        self.customertext.setGeometry(QtCore.QRect(30, 60, 700, 250))
+        self.customertext.setGeometry(QtCore.QRect(30, 60, 1100, 250))
         font = QtGui.QFont()
         font.setPointSize(19)
         font.setBold(True)
@@ -69,12 +59,12 @@ class Ui_MainWindow2(object):
         self.countertext.setFont(font)
         self.countertext.setObjectName("카운터에서 오는 텍스트")
 
-        self.sendtext = QtWidgets.QLineEdit(self.centralwidget)
-        self.sendtext.setGeometry(QtCore.QRect(760, 60, 400, 645))
-        font = QtGui.QFont()
-        font.setPointSize(19)
-        self.sendtext.setFont(font)
-        self.sendtext.setObjectName("텍스트보내는텍스트라인")
+        # self.sendtext = QtWidgets.QLineEdit(self.centralwidget)
+        # self.sendtext.setGeometry(QtCore.QRect(760, 60, 400, 645))
+        # font = QtGui.QFont()
+        # font.setPointSize(19)
+        # self.sendtext.setFont(font)
+        # self.sendtext.setObjectName("텍스트보내는텍스트라인")
 
         self.sendtext_button = QtWidgets.QPushButton(self.centralwidget)
         self.sendtext_button.setGeometry(QtCore.QRect(760, 710, 201, 51))
@@ -115,7 +105,7 @@ class Ui_MainWindow2(object):
 
         self.timer2 = QtCore.QTimer()
         self.timer2.timeout.connect(self.guit1)
-        self.timer2.start(1000)
+        self.timer2.start(2000)
 
 
         self.timer4 = QtCore.QTimer()
@@ -134,30 +124,17 @@ class Ui_MainWindow2(object):
     def guit1(self):
         from new8.server_ms import put_data
         from new8.server_ms import get_data2
-        # if self.j == put_data:
-        self.j2 = put_data
-        self.customertext.append(str(self.j2))
+
+        j1 = "get_data : " + str(get_data2)+ " \t " + "put_data : " + put_data
+        # j2 = "put_data : " + put_data
+        # j3 = "get_data2 : " + get_data2
+
+        self.customertext.append(str(j1))
+        # self.customertext.append(str(j2))
+        # self.customertext.append(str(j3))
+
         self.customertext.moveCursor(QTextCursor.End)
-
-
-        print("겟데이터 : ", get_data2)
-
-        # if self.j == put_data:
-        #     self.j = put_data
-        #     self.customertext.append(str(self.j))
-        #     self.customertext.moveCursor(QTextCursor.End)
-
-        # if self.j =="주문취소":
-        #     self.customertext.clear()
-        #
-        # if self.j =="주문완료":
-        #     self.customertext.clear()
-
-        # self.customertext.setText(str(self.j))
-        # self.customertext.moveCursor(QTextCursor.StartOfWord)
         self.customertext.repaint()
-
-
 
     def guit2(self):
         self.l2 += 10
@@ -173,8 +150,8 @@ class Ui_MainWindow2(object):
 
 
     def pushcounter(self):
-        # o = str("주문완료")
-        o = str("아메리카노,아메리카노,아메리카노,에스프레소,레몬에이드,카페모카,레몬에이드,카페라떼,초코라떼,초코라떼,에스프레소")
+        o = str("주문완료")
+        # o = str("아메리카노,아메리카노,아메리카노,에스프레소,레몬에이드,카페모카,레몬에이드,카페라떼,초코라떼,초코라떼,에스프레소")
         subthread(o)
 
     def sendtextbtn(self):

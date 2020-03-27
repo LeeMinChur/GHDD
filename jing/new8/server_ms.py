@@ -36,14 +36,26 @@ class Cserver(threading.Thread):
             data = get_data.decode('utf-8')
             print("server data: %s" % data)
             if  data == "세팅수락":
-                put_data = self.send_menu2
+                put_data =  self.send_menu2 + "/"
                 flag =1
                 print('sending : %s' % put_data)
+
+            elif data == "고객시작":
+                put_data = self.send_menu2 + "/"
+                flag =1
+                print('sending : %s' % put_data)
+
+            elif data == "가격확인":
+                print('receive:%s'%get_data.decode('utf-8'))
+                put_data ="세팅완료"
+                print('sending : %s' % put_data)
+                flag =1
+
 
             elif data == "메뉴확인":
                 time.sleep(1)
                 print('receive:%s'%get_data.decode('utf-8'))
-                put_data ="세팅완료"
+                put_data = self.send_price + "."
                 print('sending : %s' % put_data)
                 flag =1
             elif data == "주문완료":
@@ -84,11 +96,11 @@ class Cserver(threading.Thread):
 
             else:
                 get_data2 = list(get_data.decode('utf-8').split(','))
+                get_data2.pop()
                 put_data = data
                 db = pymysql.connect(host='192.168.0.7', port=3306, user='root', passwd='5284', db='Project', charset='utf8')
                 cursor = db.cursor()
                 # pysql.sqlConnect()
-                print("겟데이터:" , get_data2)
 
                 for i in get_data2:
                     sql1 = "select 메뉴이름 from 메뉴 where 메뉴이름=%s;"

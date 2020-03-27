@@ -1,9 +1,6 @@
 import threading
 import time
-
 import pymysql
-from PyQt5 import QtCore
-from PyQt5.QtCore import QTimer
 
 class pysql(threading.Thread):
     def __init__(self):
@@ -20,7 +17,7 @@ class pysql(threading.Thread):
                  , password='5284'
                  , db='project'
                  , charset='utf8')
-
+            #
             # 주서버가 작동하지 않을때 임시서버
             # self.conn = pymysql.connect \
             #     (host='127.0.0.10'
@@ -169,7 +166,7 @@ class pysql(threading.Thread):
         print(self.salecol)
 
         # 주문내역테이블 행 개수
-        self.주문내역테이블행개수 = """select count(*) from 판매내역;"""
+        self.주문내역테이블행개수 = """select count(*) from 판매내역 where date(주문시간)=curdate();"""
         self.cursor.execute(self.주문내역테이블행개수)
         self.res11 = self.cursor.fetchall()
 
@@ -183,7 +180,7 @@ class pysql(threading.Thread):
 
         # 데이터 모두 하나씩 출력
 
-        self.데이터모두하나씩출력 = ''' select * from 판매내역;'''
+        self.데이터모두하나씩출력 = ''' select * from 판매내역 where date(주문시간)=curdate();'''
         self.cursor.execute(self.데이터모두하나씩출력)
 
         self.saletableall = self.cursor.fetchall()
@@ -233,7 +230,8 @@ class pysql(threading.Thread):
             data_list = (list(data))
             data_int = data_list[0]
             self.data_int1 = int(data_int)
-        print(1)
+
+        print(self.data_int1)
 
         # 행 개수
         sql2 = """select count(*) from 메뉴;"""
@@ -245,6 +243,7 @@ class pysql(threading.Thread):
             data_int = data_list[0]
             self.data_int2 = int(data_int)
 
+        print(self.data_int2)
         # 행이 data_int2, 열이 data_int1
 
         # 총 데이터베이스 출력
@@ -252,6 +251,8 @@ class pysql(threading.Thread):
         self.cursor.execute(sql3)
         self.res3 = self.cursor.fetchall()
 
+        for i in self.res3:
+            print(i)
 
         # 데이터 모두 하나씩 출력
 
@@ -260,6 +261,9 @@ class pysql(threading.Thread):
 
         self.res5 = self.cursor.fetchall()
         self.res6 = self.cursor.fetchone()
+        for i in range(0, len(self.res5)):
+            for j in range(0, self.data_int1):
+                print(self.res5[i][j])
 
         self.menu_column_print = """SELECT COLUMN_NAME
         FROM INFORMATION_SCHEMA.COLUMNS
@@ -270,6 +274,9 @@ class pysql(threading.Thread):
 
         menu_col = self.cursor.fetchall()
         self.menu_list = [x[0] for x in menu_col]
+
+        for i in range(0, len(self.menu_list)):
+            print(self.menu_list[i])
 
         # ---------------------------재료테이블 데이터 추출 2번째 테이블------------------------#
         # 열 개수
@@ -285,6 +292,8 @@ class pysql(threading.Thread):
             data_int = data_list[0]
             self.ingrecol = int(data_int)
 
+        print(self.ingrecol)
+
         # 재료테이블 행 개수
         self.재료테이블행개수sql = """select count(*) from 재료재고;"""
         self.cursor.execute(self.재료테이블행개수sql)
@@ -295,11 +304,16 @@ class pysql(threading.Thread):
             data_int = data_list[0]
             self.foodrow = int(data_int)
 
+        print(self.foodrow)
+
         # 데이터 모두 하나씩 출력
         self.재료테이블하나씩출력하는sql문 = ''' select *from 재료재고'''
         self.cursor.execute(self.재료테이블하나씩출력하는sql문)
 
         self.foodtableall = self.cursor.fetchall()
+        for i in range(0, len(self.foodtableall)):
+            for j in range(0, self.ingrecol):
+                print(self.foodtableall[i][j])
 
         self.재료열만출력하는sql문 = """SELECT COLUMN_NAME
         FROM INFORMATION_SCHEMA.COLUMNS
@@ -310,6 +324,9 @@ class pysql(threading.Thread):
 
         ingre_col = self.cursor.fetchall()
         self.ingredient_list = [x[0] for x in ingre_col]
+
+        for i in range(0, len(self.ingredient_list)):
+            print(self.ingredient_list[i])
 
 
 
@@ -325,51 +342,65 @@ class send_menu():
     def test11(self):
         pysql.sqlConnect(self)
 
-        메뉴테이블열갯수sql = """SELECT count(COLUMN_NAME)
-        FROM INFORMATION_SCHEMA.COLUMNS
-        WHERE TABLE_SCHEMA = SCHEMA()
-        AND TABLE_NAME = '메뉴' ORDER BY ORDINAL_POSITION;"""
-        self.cursor.execute(메뉴테이블열갯수sql)
-        res = self.cursor.fetchall()
-
-        for data in res:
-            data_list = (list(data))
-            data_int = data_list[0]
-            self.data_int1 = int(data_int)
-
-        # 행 개수
-        sql2 = """select count(*) from 메뉴;"""
-        self.cursor.execute(sql2)
-        res2 = self.cursor.fetchall()
-
-
-        for i in res2:
-            data_list = (list(i))
-            data_int = data_list[0]
-            self.data_int2 = int(data_int)
-
-        # print(data_int2)
-        # 행이 data_int2, 열이 data_int1
-
-        # 데이터 모두 하나씩 출력
-        self.sql5 = ''' select *from 메뉴'''
-        self.cursor.execute(self.sql5)
-
-        res5 = self.cursor.fetchall()
-        # for i in range(0, len(res5)):
-        #     for j in range(0, data_int1):
+        # 메뉴테이블열갯수sql = """SELECT count(COLUMN_NAME)
+        # FROM INFORMATION_SCHEMA.COLUMNS
+        # WHERE TABLE_SCHEMA = SCHEMA()
+        # AND TABLE_NAME = '메뉴' ORDER BY ORDINAL_POSITION;"""
+        # self.cursor.execute(메뉴테이블열갯수sql)
+        # res = self.cursor.fetchall()
+        #
+        # for data in res:
+        #     data_list = (list(data))
+        #     data_int = data_list[0]
+        #     self.data_int1 = int(data_int)
+        #
+        # # 행 개수
+        # sql2 = """select count(*) from 메뉴;"""
+        # self.cursor.execute(sql2)
+        # res2 = self.cursor.fetchall()
+        #
+        #
+        # for i in res2:
+        #     data_list = (list(i))
+        #     data_int = data_list[0]
+        #     self.data_int2 = int(data_int)
+        #
+        # # print(data_int2)
+        # # 행이 data_int2, 열이 data_int1
+        #
+        # # 데이터 모두 하나씩 출력
+        # self.sql5 = ''' select *from 메뉴'''
+        # self.cursor.execute(self.sql5)
+        #
+        # res5 = self.cursor.fetchall()
+        # # for i in range(0, len(res5)):
+        # #     for j in range(0, data_int1):
 
 
         메뉴목록 = """select 메뉴이름 from 메뉴"""
         self.cursor.execute(메뉴목록)
         menu_list2 = self.cursor.fetchall()
 
-
-
         menu_list3=[x[0] for x in menu_list2]
         self.send_menu2='/'.join(menu_list3)
-
         print(self.send_menu2)
+
+
+
+        메뉴가격 = """select 메뉴가격 from 메뉴"""
+        self.cursor.execute(메뉴가격)
+        menu_price = self.cursor.fetchall()
+
+        menu_price2 = [str(x[0]) for x in menu_price]
+        self.send_price ='.'.join(menu_price2)
+
+
+        print(self.send_price)
+
+
+
+
+
 
 
 

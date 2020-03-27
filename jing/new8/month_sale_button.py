@@ -9,7 +9,7 @@ def month_graph():
     db = pymysql.connect(host='192.168.0.7', port=3306, user='root', passwd='5284', db='Project', charset='utf8')
     cursor = db.cursor()
     c=[]
-    sql="select 주문시간,메뉴가격 from 판매내역;"
+    sql="select 매출일,매출액 from 일별매출;"
     cursor.execute(sql)
     res=cursor.fetchall()
 
@@ -36,10 +36,11 @@ def month_graph():
 
     plt.title('일별매출')
     plt.xticks(x)
-    plt.plot(x,y,color='r',linestyle='-', label="value")
+    plt.plot(x,y,color='r',marker='.',linestyle='-', label="value")
     plt.grid(True,linestyle='--',linewidth
     =0.5)
     #
-    plt.xlabel('time')
+    plt.xlabel('day')
+    # plt.ylael('매출')
     plt.legend(loc=2)
     plt.show()

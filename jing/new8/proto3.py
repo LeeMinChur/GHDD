@@ -1,14 +1,8 @@
-# -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'D:\jjy\storejjy\prototype\proto.ui'
-
-import time
 import sys
-import threading
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QTextCursor
-from PyQt5.QtWidgets import QMainWindow, QVBoxLayout, QLCDNumber, QHBoxLayout
+from PyQt5.QtWidgets import QMainWindow
 
 from new8.server_ms import *
 
