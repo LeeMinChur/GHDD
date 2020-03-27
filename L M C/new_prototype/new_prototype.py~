@@ -134,13 +134,13 @@ def sdcallback(channel):
     global flg
     global order_list
     global order_menu
-    font1 =ImageFont.truetype("/fonts/trutype/nanum/NanumBarunGothic.ttf",15)
+    font =ImageFont.truetype("/fonts/trutype/nanum/NanumBarunGothic.ttf",15)
     try:
         print(flg)
         if flg == 0:
             print('send')
             with canvas(device) as draw:
-                draw.text((20,5), '주문완료 되었습니다.', font=font1, fill=255)
+                draw.text((20,5), '주문완료 되었습니다.', font=font, fill=255)
             sock.send('주문완료'.encode('utf-8'))
             order_list=[]
             print(flg)
@@ -148,7 +148,7 @@ def sdcallback(channel):
             pass           
         elif flg == 2:
             with canvas(device) as draw:
-                draw.text((20,25), '제품출고 되었습니다.', font=font1, fill=255)
+                draw.text((20,25), '제품출고 되었습니다.', font=font, fill=255)
             sock.send('제품출고'.encode('utf-8'))
             flg=0
     except:

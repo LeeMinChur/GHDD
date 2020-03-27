@@ -70,18 +70,11 @@ def receive(s):
             disp.clear()
             draw.text((x+29,top),'order list',font=font, fill=255)
             ovlap=[]
-            ovlap =list(set(order_list))         
+            ovlap =list(set(order_list))
+            print(ovlap)
             c = []
-            c_all=[]
-            
             for i in ovlap:
                 c.append(order_list.count(str(i)))
-            c_all.append(c)
-            print(order_list)
-            print(ovlap)
-            print(c_all)
-            time.sleep(1)
-            
             #temp_all = []      
             temp=[]
             s = (2*5)+1
@@ -121,6 +114,50 @@ def receive(s):
             if GPIO.input(button3)==GPIO.HIGH:
                 time.sleep(1)
                 while True:
+                    
+                    for i in range(len(temp_all)):
+                        def client
+                    def client1():
+                        image = Image.new('1',(width, height))
+                        draw = ImageDraw.Draw(image)
+                        disp.clear()
+                        while True:                            
+                            for i in range(len(temp_all[0])):                               
+                                draw.text((x,top+12+(s*(i))), '{}'.format(temp_all[0][i]), font=font1, fill=255)                            
+                                disp.image(image)
+                                disp.display()
+                            draw.text((x+40,top+56),'5.이전단계',font=font1, fill=255)
+                            if GPIO.input(button5)==GPIO.HIGH:
+                                break
+                            
+                    def client2():
+                        image = Image.new('1',(width, height))
+                        draw = ImageDraw.Draw(image)
+                        disp.clear()
+                        while True:                            
+                            for i in range(len(temp_all[1])):                               
+                                draw.text((x,top+12+(s*(i))), '{}'.format(temp_all[1][i]), font=font1, fill=255)                            
+                                disp.image(image)
+                                disp.display()
+                            draw.text((x+40,top+56),'5.이전단계',font=font1, fill=255)
+                            if GPIO.input(button5)==GPIO.HIGH:
+                                break
+                    def client3():
+                        image = Image.new('1',(width, height))
+                        draw = ImageDraw.Draw(image)
+                        disp.clear()
+                        while True:                            
+                            for i in range(len(temp_all[2])):                               
+                                draw.text((x,top+12+(s*(i))), '{}'.format(temp_all[2][i]), font=font1, fill=255)                            
+                                disp.image(image)
+                                disp.display()
+                            draw.text((x+40,top+56),'5.이전단계',font=font1, fill=255)
+                            if GPIO.input(button5)==GPIO.HIGH:
+                                break
+                        
+                    
+                        
+                    
                     image = Image.new('1',(width, height))
                     draw = ImageDraw.Draw(image)
                     disp.clear()
@@ -129,6 +166,20 @@ def receive(s):
                     draw.text((x+20,top+41),'3.Client2  4.Clinet4 ',font=font1, fill=255)
                     disp.image(image)
                     disp.display()
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
                     
                     if GPIO.input(button1)==GPIO.HIGH:
                         image = Image.new('1',(width, height))
@@ -142,7 +193,6 @@ def receive(s):
                             draw.text((x+40,top+56),'5.이전단계',font=font1, fill=255)
                             if GPIO.input(button5)==GPIO.HIGH:
                                 break
-                            
                     if GPIO.input(button2)==GPIO.HIGH:
                         image = Image.new('1',(width, height))
                         draw = ImageDraw.Draw(image)
@@ -155,7 +205,6 @@ def receive(s):
                             draw.text((x+40,top+56),'5.이전단계',font=font1, fill=255)
                             if GPIO.input(button5)==GPIO.HIGH:
                                 break
-                            
                     if GPIO.input(button3)==GPIO.HIGH:
                         image = Image.new('1',(width, height))
                         draw = ImageDraw.Draw(image)
@@ -168,7 +217,6 @@ def receive(s):
                             draw.text((x+40,top+56),'5.이전단계',font=font1, fill=255)
                             if GPIO.input(button5)==GPIO.HIGH:
                                 break
-                            
                     if GPIO.input(button4)==GPIO.HIGH:
                         image = Image.new('1',(width, height))
                         draw = ImageDraw.Draw(image)
@@ -254,3 +302,4 @@ def sender1(channel):
 GPIO.add_event_detect(button1,GPIO.RISING, callback=sender1, bouncetime=200)
 
 run()
+
