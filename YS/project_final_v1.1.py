@@ -103,7 +103,7 @@ def menu(device, draw, menustr,index):
                 draw.text((90, ((i-(index-2))*15)+15), menu_price[i], font=font, fill=255)          
 
 
-def sw_callback(channel):  
+def OK(channel):  
     global menuindex
     global order_cnt
     global choice_menu
@@ -261,9 +261,9 @@ def recv(sock):
 
 
 
-GPIO.add_event_detect(btn_up, GPIO.RISING , callback=rotary_callback1, bouncetime=250)
-GPIO.add_event_detect(btn_down,GPIO.RISING, callback=rotary_callback2, bouncetime=250)
-GPIO.add_event_detect(btn_ok, GPIO.RISING , callback=sw_callback, bouncetime=300)
+GPIO.add_event_detect(btn_up, GPIO.RISING , callback=scroll_up, bouncetime=250)
+GPIO.add_event_detect(btn_down,GPIO.RISING, callback=scroll_down, bouncetime=250)
+GPIO.add_event_detect(btn_ok, GPIO.RISING , callback=OK, bouncetime=300)
 GPIO.add_event_detect(btn_order, GPIO.RISING, callback=order_page ,bouncetime=300)
 GPIO.add_event_detect(btn_cancel, GPIO.RISING, callback=cancel ,bouncetime=300)
 
