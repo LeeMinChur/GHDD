@@ -10,7 +10,7 @@ import socket
 from PIL import ImageFont, ImageDraw
 import pygame
 
-HOST = '192.168.0.13'
+HOST = '192.168.0.2'
 PORT = 9988
 button1 = 24
 button2 = 23
