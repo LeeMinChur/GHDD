@@ -15,7 +15,7 @@ btn_ok = 13
 btn_order = 21
 btn_cancel = 20
 flg=0
-HOST = '192.168.0.13'
+HOST = '192.168.0.2'
 PORT = 9988 
 global menuindex
 menu_name = []
@@ -117,6 +117,7 @@ def OK(channel):
                 draw.text((20, 35), "추가되었습니다", font=font,fill="white")
                 choice_menu.append(menu_name[menuindex])
                 order_cnt[menuindex] +=1
+                flg=2
 
         elif flg==1:
             with canvas(device) as draw:
@@ -124,13 +125,17 @@ def OK(channel):
                 draw.text((38, 25), "주문접수",font=font, fill="white")
                 order_list=','.join(choice_menu)+','
                 sock.send(order_list.encode('utf-8'))
-                
+                flg=5
         elif flg==2:
             with canvas(device) as draw:
                 menu(device, draw, menu_name,0)
             flg=0
         elif flg==3:
             sock.send('세팅수락'.encode('utf-8'))
+        elif flg==4:
+            with canvas(device) as draw:
+                menu(device, draw, menu_name,0)
+            flg=0
         
             
 
@@ -139,13 +144,15 @@ def OK(channel):
 def order_page(channel):
     global flg
     global order_cnt
-    flg = not flg
+    flg= not flg
     if flg == 1:
         with canvas(device) as draw:
             ordermenu(device, draw, menu_name,0)
     elif flg ==0:
         with canvas(device) as draw:
             menu(device, draw, menu_name,0)
+    else:
+        pass
         
             
 
@@ -182,15 +189,39 @@ def cancel(channel):
     global choice_menu
     global order_cnt
     font =ImageFont.truetype("/fonts/trutype/nanum/NanumBarunGothic.ttf",15)
-    with canvas(device) as draw:
-        draw.rectangle(device.bounding_box, outline="white", fill="black")
-        draw.text((43, 20), "주문이",font=font, fill="white")
-        draw.text((15, 35), "취소되었습니다", font=font,fill="white")
-        choice_menu=[]
-        order_cnt=[]
-        for i in range(len(menu_name)):
-            order_cnt.append(0)
-        flg=2
+    if flg == 0 or flg==1 or flg==2:
+        with canvas(device) as draw:
+            draw.rectangle(device.bounding_box, outline="white", fill="black")
+            draw.text((43, 20), "주문이",font=font, fill="white")
+            draw.text((15, 35), "취소되었습니다", font=font,fill="white")
+            choice_menu=[]
+            order_cnt=[]
+            for i in range(len(menu_name)):
+                order_cnt.append(0)
+            flg=2
+    elif flg == 5:
+        with canvas(device) as draw:
+            draw.rectangle(device.bounding_box, outline="white", fill="black")
+            draw.text((43, 20), "주문이",font=font, fill="white")
+            draw.text((15, 35), "취소되었습니다", font=font,fill="white")
+            sock.send('주문취소'.encode('utf-8'))
+            choice_menu=[]
+            order_cnt=[]
+            for i in range(len(menu_name)):
+                order_cnt.append(0)
+            flg=2
+    elif flg == 4:
+        with canvas(device) as draw:
+            draw.rectangle(device.bounding_box, outline="white", fill="black")
+            draw.text((15, 20), "주문취소요청이",font=font, fill="white")
+            draw.text((15, 35), "접수되었습니다", font=font,fill="white")
+            sock.send('주문취소'.encode('utf-8'))
+            choice_menu=[]
+            order_cnt=[]
+            for i in range(len(menu_name)):
+                order_cnt.append(0)
+            flg=2
+        
 
 def recv(sock):
     global flg
@@ -206,7 +237,7 @@ def recv(sock):
             recv=sock.recv(1024)
             print(recv.decode('utf-8'))
             if recv.decode('utf-8')=='주문완료':
-                if flg==1:
+                if flg==5:
                     with canvas(device) as draw:
                         draw.rectangle(device.bounding_box, outline="white", fill="black")
                         draw.text((25, 10), "주문접수완료",font=font, fill="white")
@@ -216,7 +247,7 @@ def recv(sock):
                         order_cnt=[]
                         for i in range(len(menu_name)):
                             order_cnt.append(0)
-                    flg=2
+                    flg=4
                 else:
                     pass
             elif recv.decode('utf-8')=='메뉴세팅':
