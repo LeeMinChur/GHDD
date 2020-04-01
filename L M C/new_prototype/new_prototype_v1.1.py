@@ -10,12 +10,12 @@ import socket
 from PIL import ImageFont, ImageDraw
 import pygame
 
-HOST = '192.168.0.2'
+HOST = '192.168.0.13'
 PORT = 9988
-button1 = 26
-button2 = 19
-button3 = 13
-button4 = 21
+button1 = 24
+button2 = 23
+button3 = 18
+button4 = 25
 button5 = 20
 flg = 0
 freq=24000
@@ -32,16 +32,18 @@ order_cnt=[]
 global order_list
 order_list=[]
 global order_all
-order_all=[['g','c','b'],['a','c','b'],['민철','영신']]
+order_all=[]
 global order_sum
 order_sum=sum(order_all,[])
 global cnt_all
-cnt_all=[['1','2','3'],['1','4','5'],['1','2']]
+cnt_all=[]
 global cnt_sum
 cnt_sum=sum(cnt_all,[])
+
+sock=socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.connect((HOST,PORT))
     
 GPIO.setmode(GPIO.BCM)
-
 GPIO.setup(button1, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(button2, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(button3, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
@@ -81,21 +83,21 @@ def menu2(device, draw, menustr,index):
             if( i == index):
                 menuindex = i
                 invert(draw, 2, (i*15)+15, menustr[i])
-                invert(draw, 62, (i*15)+15, str(cnt_sum[i]))
+                invert(draw, 85, (i*15)+15, str(cnt_sum[i]))
             else:
                 draw.text((2, (i*15)+15), menustr[i], font=font, fill=255)
-                draw.text((62, (i*15)+15), str(cnt_sum[i]), font=font, fill=255)
+                draw.text((85, (i*15)+15), str(cnt_sum[i]), font=font, fill=255)
     else:
         for i in range(index-2,index+1):
             if (i == index):
                 menuindex = i
                 invert(draw, 2, ((i-(index-2))*15+15), menustr[i])
-                invert(draw, 62, ((i-(index-2))*15+15), str(cnt_sum[i]))
+                invert(draw, 85, ((i-(index-2))*15+15), str(cnt_sum[i]))
             elif (i==len(menustr)):
                 pass
             else:
                 draw.text((2, ((i-(index-2))*15)+15), menustr[i], font=font, fill=255)
-                draw.text((62, ((i-(index-2))*15)+15), str(cnt_sum[i]), font=font, fill=255)
+                draw.text((85, ((i-(index-2))*15)+15), str(cnt_sum[i]), font=font, fill=255)
                 
 def rotary_callback1(channel):  
     global menuindex
@@ -163,6 +165,7 @@ def recv(sock):
                 order_menu=list(set(order_list))
                 for i in order_menu:
                     order_cnt.append(order_list.count(str(i)))
+                print(order_cnt)
                 cnt_all.append(order_cnt)
                 cnt_sum=sum(cnt_all,[])
                 order_all.append(order_menu)
@@ -214,8 +217,8 @@ def sdcallback2(channel):
         if flg==0:
             with canvas(device) as draw:
                     draw.text((5,25), '제품출고 되었습니다.', font=font, fill=255)
-                mp3(productout)
-                sock.send('제품출고'.encode('utf-8'))
+            #mp3(productout)
+            sock.send('제품출고'.encode('utf-8'))
             order_all.pop(0)
             order_sum=sum(order_all,[])
             cnt_all.pop(0)
