@@ -41,16 +41,23 @@ class ing_del(QDialog):
     def selec(self):
         self.a=self.qcombo1.currentText()
 
+
     def ing_del_ok(self):
         pysql.sqlConnect(self)
         try:
             ing_del_sql = "delete from 재료재고 where 재료=%s;"
             self.a
-            self.cursor.execute(ing_del_sql,self.a)
-            self.conn.commit()
-            self.conn.close()
-            QMessageBox.information(self, "삭제완료", "재료삭제가 완료되었습니다.", QMessageBox.Ok, QMessageBox.Ok)
-            self.close()
+            if self.a!="":
+                self.cursor.execute(ing_del_sql,self.a)
+                self.conn.commit()
+                self.conn.close()
+                QMessageBox.information(self, "삭제완료", "재료삭제가 완료되었습니다.", QMessageBox.Ok, QMessageBox.Ok)
+                self.close()
+
+            else:
+                QMessageBox.information(self, "선택오류", "삭제할 재료를 선택해주세요.", QMessageBox.Ok, QMessageBox.Ok)
+                return
+
         except:
             QMessageBox.information(self, "선택오류", "삭제할 재료를 선택해주세요.", QMessageBox.Ok, QMessageBox.Ok)
 

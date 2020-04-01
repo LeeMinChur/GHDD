@@ -53,7 +53,7 @@ class ing_mod(QDialog):
             try:
                 a = int(self.lineEdit1.text())
                 if a <= 0:
-                    QMessageBox.information(self, "입력오류", "0개 미만으로 입력될 수 없습니다.", QMessageBox.Ok, QMessageBox.Ok)
+                    QMessageBox.information(self, "입력오류", "0개 이상으로 입력해주세요.", QMessageBox.Ok, QMessageBox.Ok)
                     return
 
                 else:
@@ -64,7 +64,12 @@ class ing_mod(QDialog):
                 return
 
             try:
-                b = self.b
+                if self.b!="":
+                    b = self.b
+                else:
+                    QMessageBox.information(self, "선택오류", "삭제할 재료를 선택해주세요.", QMessageBox.Ok, QMessageBox.Ok)
+                    return
+
             except:
                 QMessageBox.information(self, "선택오류", "발주할 재료를 선택하세요.", QMessageBox.Ok, QMessageBox.Ok)
                 return

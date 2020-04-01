@@ -11,6 +11,9 @@ class ing_add(QDialog):
         self.setupUI()
 
     def setupUI(self):
+
+
+
         self.setGeometry(300, 300, 400, 200)
         self.setWindowTitle("재료추가")
 
@@ -38,10 +41,23 @@ class ing_add(QDialog):
     def ing_ins_ok(self):
         pysql.sqlConnect(self)
 
+        sql1 = "select 재료 from 재료재고;"
+        self.cursor.execute(sql1)
+        res = self.cursor.fetchall()
+        rec = [x[0] for x in res]
+        for i in rec:
+            print(i)
+
         if (self.lineEdit1.text() != "") and (self.lineEdit2 != ""):
 
             ing_ins_sql = "insert into 재료재고 values (%s,%s);"
-            txt_ins_ing_name = self.lineEdit1.text()
+
+            for i in rec:
+                if self.lineEdit1.text()!=i:
+                    txt_ins_ing_name = self.lineEdit1.text()
+                else:
+                    QMessageBox.information(self, "입력오류", "이미 있는 재료입니다.", QMessageBox.Ok, QMessageBox.Ok)
+                    return
 
             try:
                 txt_ins_ing_stock = int(self.lineEdit2.text())
@@ -51,9 +67,6 @@ class ing_add(QDialog):
 
                 else:
                     pass
-
-
-
 
             except:
                 QMessageBox.information(self, "입력오류", "재료개수를 입력하세요.(숫자만)", QMessageBox.Ok, QMessageBox.Ok)
@@ -70,9 +83,8 @@ class ing_add(QDialog):
 
             QMessageBox.information(self, "추가완료", "재료추가가 완료되었습니다.", QMessageBox.Ok, QMessageBox.Ok)
             self.close()
-
-        else :
-            QMessageBox.information(self, "입력오류", "빈칸 없이 입력하세요.", QMessageBox.Ok, QMessageBox.Ok)
+        else:
+            QMessageBox.information(self, "입력오류", "빈칸없이 입력하세요.", QMessageBox.Ok, QMessageBox.Ok)
 
 
     def ing_ins_cancel(self):
