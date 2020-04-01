@@ -45,6 +45,15 @@ class ing_add(QDialog):
 
             try:
                 txt_ins_ing_stock = int(self.lineEdit2.text())
+                if txt_ins_ing_stock <= 0:
+                    QMessageBox.information(self, "입력오류", "0개 미만으로 입력될 수 없습니다.", QMessageBox.Ok, QMessageBox.Ok)
+                    return
+
+                else:
+                    pass
+
+
+
 
             except:
                 QMessageBox.information(self, "입력오류", "재료개수를 입력하세요.(숫자만)", QMessageBox.Ok, QMessageBox.Ok)

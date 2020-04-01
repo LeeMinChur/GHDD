@@ -52,6 +52,12 @@ class ing_mod(QDialog):
 
             try:
                 a = int(self.lineEdit1.text())
+                if a <= 0:
+                    QMessageBox.information(self, "입력오류", "0개 미만으로 입력될 수 없습니다.", QMessageBox.Ok, QMessageBox.Ok)
+                    return
+
+                else:
+                    pass
 
             except(ValueError):
                 QMessageBox.information(self, "입력오류", "재료개수를 입력하세요.(숫자만)", QMessageBox.Ok, QMessageBox.Ok)

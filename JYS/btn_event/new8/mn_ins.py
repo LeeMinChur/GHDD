@@ -80,6 +80,13 @@ class mn_add(QDialog):
                 txt_menu_name = self.lineEdit1.text()
                 try:
                     txt_menu_price = int(self.lineEdit2.text())
+
+                    if txt_menu_price <= 0:
+                        QMessageBox.information(self, "입력오류", "0원 미만으로 입력될 수 없습니다.", QMessageBox.Ok, QMessageBox.Ok)
+                        return
+
+                    else:
+                        pass
                     # input으로 받아온 값이 INT형이 아닐 때 나타내는 에러
                 except:
                     QMessageBox.information(self, "입력오류", "메뉴가격을 입력하세요.(숫자만)", QMessageBox.Ok, QMessageBox.Ok)

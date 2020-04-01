@@ -54,6 +54,12 @@ class mn_mod(QDialog):
         if self.lineEdit1.text()!="":
             try:
                 a = int(self.lineEdit1.text())
+                if a <= 0:
+                    QMessageBox.information(self, "입력오류", "0원 미만으로 입력될 수 없습니다.", QMessageBox.Ok, QMessageBox.Ok)
+                    return
+
+                else:
+                    pass
                 # input으로 받아온 값이 INT형이 아닐 때 나타내는 에러
             except:
                 QMessageBox.information(self, "입력오류", "숫자를 입력하세요.", QMessageBox.Ok, QMessageBox.Ok)
