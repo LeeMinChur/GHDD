@@ -15,7 +15,7 @@ btn_ok = 13
 btn_order = 21
 btn_test = 20
 flg=0
-HOST = '192.168.0.2'
+HOST = '192.168.0.13'
 PORT = 9988
 global menuindex
 names = []
