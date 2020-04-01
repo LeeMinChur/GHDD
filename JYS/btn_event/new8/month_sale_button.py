@@ -92,3 +92,4 @@ def year_graph():
     plt.legend(loc=2)
     plt.show()
     db.close()
+

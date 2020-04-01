@@ -66,7 +66,12 @@ class mn_mod(QDialog):
                 return
 
             try:
-                b = self.b
+                if self.b!="":
+                    b = self.b
+                else:
+                    QMessageBox.information(self, "선택오류", "삭제할 재료를 선택해주세요.", QMessageBox.Ok, QMessageBox.Ok)
+                    return
+
             except:
                 QMessageBox.information(self, "입력오류", "삭제할 메뉴를 선택하세요.", QMessageBox.Ok, QMessageBox.Ok)
                 return

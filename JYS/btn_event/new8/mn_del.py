@@ -10,7 +10,7 @@ class mn_del(QDialog):
 
     def setupUI(self):
         pysql.sqlConnect(self)
-        self.setGeometry(300, 300, 400, 500)
+        self.setGeometry(300, 300, 400, 200)
         self.setWindowTitle("메뉴 삭제")
         self.pushButton1 = QPushButton("메뉴삭제")
         sql1 = "select 메뉴이름 from 메뉴;"
@@ -22,11 +22,11 @@ class mn_del(QDialog):
         self.qcombo1 = QComboBox(self)
         self.qcombo1.addItems(rec)
 
-        self.pushButton1.clicked.connect(self.ing_del_ok)
+        self.pushButton1.clicked.connect(self.mn_del_ok)
         self.qcombo1.currentTextChanged.connect(self.selec)
 
         self.pushButton2 = QPushButton("취소")
-        self.pushButton2.clicked.connect(self.ing_del_cancel)
+        self.pushButton2.clicked.connect(self.mn_del_cancel)
 
         layout = QGridLayout()
         layout.addWidget(label1, 0, 0)

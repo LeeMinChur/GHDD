@@ -74,10 +74,25 @@ class mn_add(QDialog):
 
     def mn_ins_ok(self):
         pysql.sqlConnect(self)
+        sql1 = "select 메뉴이름 from 메뉴;"
+        self.cursor.execute(sql1)
+        res = self.cursor.fetchall()
+        rec = [x[0] for x in res]
+        for i in rec:
+            print(i)
+
         if self.lineEdit1.text() != "" and self.lineEdit1.text() != "":
             try:
                 mn_ins_sql = "insert into 메뉴 values (%s,%s,%s,NULL,%s,NULL,%s,NULL);"
-                txt_menu_name = self.lineEdit1.text()
+
+                for i in rec:
+                    if self.lineEdit1.text()!=i:
+                        txt_menu_name = self.lineEdit1.text()
+
+                    elif self.lineEdit1.text()==i:
+                        QMessageBox.information(self, "입력오류", "이미 있는 메뉴입니다.", QMessageBox.Ok, QMessageBox.Ok)
+                        return
+
                 try:
                     txt_menu_price = int(self.lineEdit2.text())
 
@@ -92,13 +107,32 @@ class mn_add(QDialog):
                     QMessageBox.information(self, "입력오류", "메뉴가격을 입력하세요.(숫자만)", QMessageBox.Ok, QMessageBox.Ok)
                     return
                 try:
-                    a = self.a
+                    if self.a!="":
+                        a = self.a
+
+                    else:
+                        QMessageBox.information(self, "선택오류", "삭제할 재료를 선택해주세요.", QMessageBox.Ok, QMessageBox.Ok)
+                        return
+
                     b = self.b
                     if b == "":
                         b = None
+
+                    elif b==a:
+                        QMessageBox.information(self, "선택오류", "레시피2에 중복된 재료가 있습니다..", QMessageBox.Ok, QMessageBox.Ok)
+                        return
+
                     c = self.c
                     if c == "":
                         c = None
+
+                    elif c==a:
+                        QMessageBox.information(self, "선택오류", "레시피3에 중복된 재료가 있습니다..", QMessageBox.Ok, QMessageBox.Ok)
+                        return
+
+                    elif c==b:
+                        QMessageBox.information(self, "선택오류", "레시피3에 중복된 재료가 있습니다.", QMessageBox.Ok, QMessageBox.Ok)
+                        return
 
 
                     data=(txt_menu_name,txt_menu_price,a,b,c)
