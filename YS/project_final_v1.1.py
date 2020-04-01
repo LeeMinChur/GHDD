@@ -18,11 +18,11 @@ flg=0
 HOST = '192.168.0.13'
 PORT = 9988 
 global menuindex
-menu = []
+menu_name = []
 choice_menu=[]
 order_cnt=[]
 menu_price=[]
-for i in range(len(menu)):
+for i in range(len(menu_name)):
     order_cnt.append(0)
 now=time.localtime()
 menuindex=0
@@ -34,7 +34,7 @@ GPIO.setup(btn_up, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(btn_down, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(btn_ok, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 GPIO.setup(btn_order, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-GPIO.setup(btn_test, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(btn_cancel, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 serial = i2c(port=1, address=0x3C)
 device = ssd1306(serial, rotate=0)
 
@@ -115,7 +115,7 @@ def OK(channel):
                 draw.rectangle(device.bounding_box, outline="white", fill="black")
                 draw.text((30, 20), "장바구니에",font=font, fill="white")
                 draw.text((20, 35), "추가되었습니다", font=font,fill="white")
-                choice_menu.append(menu[menuindex])
+                choice_menu.append(menu_name[menuindex])
                 order_cnt[menuindex] +=1
 
         elif flg==1:
@@ -127,7 +127,7 @@ def OK(channel):
                 
         elif flg==2:
             with canvas(device) as draw:
-                menu(device, draw, menu,0)
+                menu(device, draw, menu_name,0)
             flg=0
         elif flg==3:
             sock.send('세팅수락'.encode('utf-8'))
@@ -142,10 +142,10 @@ def order_page(channel):
     flg = not flg
     if flg == 1:
         with canvas(device) as draw:
-            ordermenu(device, draw, menu,0)
+            ordermenu(device, draw, menu_name,0)
     elif flg ==0:
         with canvas(device) as draw:
-            menu(device, draw, menu,0)
+            menu(device, draw, menu_name,0)
         
             
 
@@ -157,10 +157,10 @@ def scroll_up(channel):
         menuindex -= 1
         if flg==0:
             with canvas(device) as draw:
-                menu(device, draw, menu,menuindex%len(menu))
+                menu(device, draw, menu_name,menuindex%len(menu_name))
         elif flg==1:
             with canvas(device) as draw:
-                ordermenu(device, draw, menu,menuindex%len(menu))
+                ordermenu(device, draw, menu_name,menuindex%len(menu_name))
     finally:
         print("Ending")
 def scroll_down(channel):
@@ -170,10 +170,10 @@ def scroll_down(channel):
         menuindex += 1
         if flg==0:
             with canvas(device) as draw:
-                menu(device, draw, menu,menuindex%len(menu))
+                menu(device, draw, menu_name,menuindex%len(menu_name))
         elif flg==1:
             with canvas(device) as draw:
-                ordermenu(device, draw, menu,menuindex%len(menu))
+                ordermenu(device, draw, menu_name,menuindex%len(menu_name))
     finally:
         print("Ending")
         
@@ -188,7 +188,7 @@ def cancel(channel):
         draw.text((15, 35), "취소되었습니다", font=font,fill="white")
         choice_menu=[]
         order_cnt=[]
-        for i in range(len(menu)):
+        for i in range(len(menu_name)):
             order_cnt.append(0)
         flg=2
 
@@ -198,7 +198,7 @@ def recv(sock):
     global choice_menu
     global order_cnt
     global menu_price
-    global menu
+    global menu_name
     font =ImageFont.truetype("/fonts/trutype/nanum/NanumBarunGothic.ttf",15)
     try:
         while True:
@@ -214,7 +214,7 @@ def recv(sock):
                         draw.text((30, 40), "%02d:%02d:%02d" % (now.tm_hour, now.tm_min, now.tm_sec),font=font, fill="white")
                         choice_menu=[]
                         order_cnt=[]
-                        for i in range(len(menu)):
+                        for i in range(len(menu_name)):
                             order_cnt.append(0)
                     flg=2
                 else:
@@ -233,19 +233,19 @@ def recv(sock):
                         draw.text((10, 38), "다시주문해주세요",font=font, fill="white")
                         choice_menu=[]
                         order_cnt=[]
-                        for i in range(len(menu)):
+                        for i in range(len(menu_name)):
                             order_cnt.append(0)
                         flg=2
                 else:
                     with canvas(device) as draw:
-                        menu(device, draw, menu,0)
+                        menu(device, draw, menu_name,0)
                     flg=0
                     order_cnt=[]
-                    for i in range(len(menu)):
+                    for i in range(len(menu_name)):
                         order_cnt.append(0)
             elif '/' in recv.decode('utf-8'):
-                menu=list(recv.decode('utf-8').split('/'))
-                menu.pop()
+                menu_name=list(recv.decode('utf-8').split('/'))
+                menu_name.pop()
                 sock.send('메뉴확인'.encode('utf-8'))
             elif '.' in recv.decode('utf-8'):
                 menu_price=list(recv.decode('utf-8').split('.'))
