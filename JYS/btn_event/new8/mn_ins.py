@@ -119,7 +119,7 @@ class mn_add(QDialog):
                         b = None
 
                     elif b==a:
-                        QMessageBox.information(self, "선택오류", "레시피2에 중복된 재료가 있습니다..", QMessageBox.Ok, QMessageBox.Ok)
+                        QMessageBox.information(self, "선택오류", "레시피2에 중복된 재료가 있습니다.", QMessageBox.Ok, QMessageBox.Ok)
                         return
 
                     c = self.c
@@ -127,7 +127,7 @@ class mn_add(QDialog):
                         c = None
 
                     elif c==a:
-                        QMessageBox.information(self, "선택오류", "레시피3에 중복된 재료가 있습니다..", QMessageBox.Ok, QMessageBox.Ok)
+                        QMessageBox.information(self, "선택오류", "레시피3에 중복된 재료가 있습니다.", QMessageBox.Ok, QMessageBox.Ok)
                         return
 
                     elif c==b:

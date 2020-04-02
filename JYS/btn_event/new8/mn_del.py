@@ -42,8 +42,13 @@ class mn_del(QDialog):
         try:
             pysql.sqlConnect(self)
             ing_del_sql = "delete from 메뉴 where 메뉴이름=%s;"
-            self.a
-            self.cursor.execute(ing_del_sql, self.a)
+            if self.a!="":
+                a=self.a
+            else:
+                QMessageBox.information(self, "선택오류", "삭제할 메뉴를 선택해주세요.", QMessageBox.Ok, QMessageBox.Ok)
+                return
+
+            self.cursor.execute(ing_del_sql, a)
             self.conn.commit()
             self.conn.close()
             o = str("메뉴세팅")
